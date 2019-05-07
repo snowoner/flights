@@ -3,12 +3,7 @@
       <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
       <v-flex xs12>
-        <v-img class="elevation-5" width="100%" src="./logo.jpg" lazy-src="./logo.jpg">
-          <template v-slot:placeholder>
-            <v-layout fill-height align-center justify-center ma-0>
-              <v-progress-circular indeterminate color="blue"></v-progress-circular>
-            </v-layout>
-          </template>
+        <v-img class="elevation-5" width="100%" src="./logo.jpg">
         </v-img>
       </v-flex>
       <v-flex class="separated"></v-flex>
