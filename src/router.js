@@ -6,6 +6,7 @@ import Flights from "./views/Flights.vue";
 import Myflights from "./views/Myflights.vue";
 import Forgot from "./views/Forgot.vue";
 import Register from "./views/Register.vue";
+import Profile from "./views/Profile.vue";
 
 
 Vue.use(Router);
@@ -23,11 +24,6 @@ export default new Router({
       path: "/register",
       name: "register",
       component: Register
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: Login
     },
     {
       path: "/forgot",
@@ -48,6 +44,11 @@ export default new Router({
       path: "/myflights",
       name: "myflights",
       component: Myflights
-    }
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: Profile
+    },
   ]
 });

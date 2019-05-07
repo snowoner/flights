@@ -1,5 +1,4 @@
 <template>
-  
   <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
       <v-flex xs12>
@@ -39,7 +38,7 @@
         </v-card>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <strong>LandAway By Oscar Urgelles Marsal</strong>
+        <strong>LandAway By Oscar Urgelles Marsal v 1.1</strong>
       </v-flex>
     </v-layout>
   </v-container>

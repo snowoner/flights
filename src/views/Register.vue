@@ -1,5 +1,5 @@
 <template>
-   <v-container>
+ 
       <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
       <v-flex xs12>
@@ -45,7 +45,6 @@
       </v-flex>
     </v-layout>
   </v-container>
-  </v-container>
 </template>
 
 <script>
@@ -58,7 +57,7 @@ export default {
   methods: {
     validate(){
       console.log("You registered correctly!");
-      this.$router.push("login");
+      this.$router.push("/");
     }
   },
 }
