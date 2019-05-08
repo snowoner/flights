@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     bookOffer(id){
-      console.log("your deep_link is:"+id);
+      window.open(id);
     }
   },
 }
