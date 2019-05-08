@@ -38,7 +38,7 @@
         </v-card>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <strong>LandAway By Oscar Urgelles Marsal v 1.1</strong>
+        <strong>LandAway By Oscar Urgelles Marsal v 1.2</strong>
       </v-flex>
     </v-layout>
   </v-container>
@@ -60,6 +60,11 @@ export default {
 
 
 <style>
+
+.container.grid-list-md.text-xs-center {
+    background-color: #ccccf3;
+}
+
 .separated {
   margin-top: 50px;
 }

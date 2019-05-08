@@ -54,9 +54,9 @@
                 </v-carousel>
               </v-flex> -->
               <v-flex xs12>
-                <v-btn @click="displayOffers">Offers</v-btn>
+          
               </v-flex>
-              <v-flex xs12 v-if="displayoffers">
+              <v-flex xs12>
                 <h2>The last offers we found</h2>
                 <offers v-for="(offer, index) in offers" :key="offer.city" :offer="offer"></offers>
               </v-flex>
@@ -78,16 +78,16 @@ export default {
   data() {
     return {
       menu: [
-        { title: "Flights", to: "/flights" },
+        { title: "Flights", to: "/flights/ " },
         { title: "My Flights", to: "/myflights" },
         { title: "Profile", to: "/profile" }
       ],
       flight: "",
       images:[],
-      displayoffers:false,
+    
       offers:[
-        { title: "Offer1", dept: "BCN", to: "MAD", price: "100", curr:"€"},
-        { title: "Offer2", dept: "MAD", to: "BCN", price: "200", curr:"€"},
+        {id:"0", title: "Offer1", dept: "BCN", to: "MAD", price: "100", curr:"€", date:"08/05/2019"},
+        {id:"1", title: "Offer2", dept: "MAD", to: "BCN", price: "200", curr:"€", date:"09/05/2019"},
       ],
     };
   },
@@ -120,6 +120,9 @@ export default {
 <style>
 .v-card__title.blue.white--text {
   padding: 0;
+}
+.container.grid-list-md.text-xs-center {
+    background-color: #ccccf3;
 }
 
 .text-justify {
