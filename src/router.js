@@ -36,9 +36,10 @@ export default new Router({
       component: Home
     },
     {
-      path: "/flights",
+      path: "/flights/:dest",
       name: "flights",
-      component: Flights
+      component: Flights,
+      props: true
     },
     {
       path: "/myflights",

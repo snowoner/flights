@@ -15,9 +15,8 @@
                       <v-icon>menu</v-icon>
                     </v-btn>
                   </template>
-
                   <v-list>
-                    <v-list-tile v-for="(item, i) in items" :key="i">
+                    <v-list-tile v-for="(item, i) in menu" :key="i">
                       <router-link :to="item.to">
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       </router-link>
@@ -28,37 +27,38 @@
                 <p class="headline text-xs-center mb-0">Home</p>
                 <v-spacer></v-spacer>
               </v-card-title>
+              <v-flex xs12 grid-list-md text-xs-center>
+                <v-layout row class="text-center">
+                  <v-text-field prepend-icon="search" v-model="flight" label="your destination"></v-text-field>
+                  <v-btn class="mt-3" @click="search">Search</v-btn>
+                </v-layout>
+              </v-flex>
+              <v-flex xs12 class="text-justify">
+                <p>
+                  In
+                  <strong>LandAway</strong>
+                  you will find the best flights! The best companies trust us to offer you the best prices in the market.
+                </p>
+                <p>
+                  Thank you for choosing
+                  <strong>LandAway</strong>
+                </p>
+              </v-flex>
+              <!-- <v-btn @click="getphotos">GetImagesfker</v-btn>
               <v-flex xs12>
-                <v-autocomplete
-                  v-model="model"
-                  :items2="items2"
-                  :loading="isLoading"
-                  :search-input.sync="search"
-                  color="white"
-                  hide-no-data
-                  hide-selected
-                  item-text="Description"
-                  item-value="API"
-                  label="Search a Flight"
-                  placeholder="Start typing to search a flight"
-                  prepend-icon="flight_takeoff"
-                  return-object
-                ></v-autocomplete>
-                <!-- AS -->
-                <v-expand-transition>
-      <v-list v-if="model" class="red lighten-3">
-        <v-list-tile
-          v-for="(field, i) in fields"
-          :key="i"
-        >
-          <v-list-tile-content>
-            <v-list-tile-title v-text="field.value"></v-list-tile-title>
-            <v-list-tile-sub-title v-text="field.key"></v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-expand-transition>
-                <!-- AS -->
+                <v-carousel hide-delimiters>
+              
+                <router-link :to="`/flights/${flight}`"> 
+                  <v-carousel-item v-for="(item,i) in this.images" :key="i" :src="item.urls.regular"></v-carousel-item>
+                </router-link>
+                </v-carousel>
+              </v-flex> -->
+              <v-flex xs12>
+                <v-btn @click="displayOffers">Offers</v-btn>
+              </v-flex>
+              <v-flex xs12 v-if="displayoffers">
+                <h2>The last offers we found</h2>
+                <offers v-for="(offer, index) in offers" :key="offer.city" :offer="offer"></offers>
               </v-flex>
             </v-card>
           </v-flex>
@@ -72,74 +72,57 @@
 </template>
 
 <script>
+import Offers from "../components/Offers.vue";
+
 export default {
   data() {
     return {
-      items: [
+      menu: [
         { title: "Flights", to: "/flights" },
         { title: "My Flights", to: "/myflights" },
         { title: "Profile", to: "/profile" }
       ],
-      descriptionLimit: 60,
-      entries: [],
-      isLoading: false,
-      model: null,
-      search: null,
+      flight: "",
+      images:[],
+      displayoffers:false,
+      offers:[
+        { title: "Offer1", dept: "BCN", to: "MAD", price: "100", curr:"€"},
+        { title: "Offer2", dept: "MAD", to: "BCN", price: "200", curr:"€"},
+      ],
     };
-  },  
-  computed: {
-      fields () {
-        if (!this.model) return []
-
-        return Object.keys(this.model).map(key => {
-          return {
-            key,
-            value: this.model[key] || 'n/a'
-          }
-        })
-      },
-      items2 () {
-        return this.entries.map(entry => {
-          const Description = entry.Description.length > this.descriptionLimit
-            ? entry.Description.slice(0, this.descriptionLimit) + '...'
-            : entry.Description
-
-          return Object.assign({}, entry, { Description })
-        })
+  },
+  methods: {
+    search() {
+      if (this.flight) {
+        this.$router.push(`/flights/${this.flight}`);
       }
     },
-  components: {
-
-  },
-    watch: {
-      search (val) {
-        // Items have already been loaded
-        if (this.items2.length > 0) return
-
-        // Items have already been requested
-        if (this.isLoading) return
-
-        this.isLoading = true
-
-        // Lazily load input items
-        fetch('https://api.publicapis.org/entries')
-          .then(res => res.json())
-          .then(res => {
-            const { count, entries } = res
-            this.count = count
-            this.entries = entries
-          })
-          .catch(err => {
-            console.log(err)
-          })
-          .finally(() => (this.isLoading = false))
-      }
+    getphotos(){
+      fetch("https://api.unsplash.com/photos/?client_id=0f13c7b8e92159b90db18c7881b11d7910d9ca4b68ac6ce253c939a7506d95d6")
+      .then(data => data.json())
+      .then(json => {
+        this.images=json;
+      })
+      .catch(error => alert(error));
+    },
+    displayOffers(){
+      this.displayoffers=!this.displayoffers;
     }
+  },
+  computed: {},
+  components: {
+    Offers
+  },
+  watch: {}
 };
 </script>
 
 <style>
 .v-card__title.blue.white--text {
   padding: 0;
+}
+
+.text-justify {
+  text-align: justify;
 }
 </style>
