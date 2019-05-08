@@ -1,9 +1,9 @@
 <template>
   <v-flex xs12 row>
     <v-card >
-      <h1 class="mycard">{{offer.title}}</h1>
-      <span >{{offer.to}} {{offer.date}}   </span> 
-      <v-btn @click="bookOffer(offer.id)">{{offer.price}} {{offer.curr}}</v-btn>
+      <h1 class="mycard">{{offer.cityFrom}} To {{offer.cityTo}}</h1>
+      <span >{{offer.fly_duration}}   oppered by: {{offer.airlines[0]}}</span> 
+      <v-btn @click="bookOffer(offer.deep_link)">{{offer.price}}€</v-btn>
     </v-card>
   </v-flex>
 </template>
@@ -17,13 +17,14 @@ export default {
   },
   methods: {
     bookOffer(id){
-      console.log("You are booking "+id+ " offer");
+      console.log("your deep_link is:"+id);
     }
   },
 }
 </script>
 
 <style>
+
 .mycard {
     background-color:rgb(241, 170, 89)
 }

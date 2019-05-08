@@ -66,6 +66,6 @@ export default {
 
 <style>
 .container.grid-list-md.text-xs-center {
-    background-color: #ccccf3;
+    background-color: #b2b2f1;
 }
 </style>

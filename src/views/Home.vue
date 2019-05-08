@@ -33,7 +33,7 @@
                   <v-btn class="mt-3" @click="search">Search</v-btn>
                 </v-layout>
               </v-flex>
-              <v-flex xs12 class="text-justify">
+              <v-flex xs12 class="text-justify mr-2 ml-2">
                 <p>
                   In
                   <strong>LandAway</strong>
@@ -56,9 +56,9 @@
               <v-flex xs12>
           
               </v-flex>
-              <v-flex xs12>
+              <v-flex xs12 v-if="offers2">
                 <h2>The last offers we found</h2>
-                <offers v-for="(offer, index) in offers" :key="offer.city" :offer="offer"></offers>
+                <offers v-for="(offer, index) in offers2" :key="offer.flyTo" :offer="offer"></offers>
               </v-flex>
             </v-card>
           </v-flex>
@@ -83,12 +83,7 @@ export default {
         { title: "Profile", to: "/profile" }
       ],
       flight: "",
-      images:[],
-    
-      offers:[
-        {id:"0", title: "Offer1", dept: "BCN", to: "MAD", price: "100", curr:"€", date:"08/05/2019"},
-        {id:"1", title: "Offer2", dept: "MAD", to: "BCN", price: "200", curr:"€", date:"09/05/2019"},
-      ],
+      images: [],
     };
   },
   methods: {
@@ -97,23 +92,38 @@ export default {
         this.$router.push(`/flights/${this.flight}`);
       }
     },
-    getphotos(){
-      fetch("https://api.unsplash.com/photos/?client_id=0f13c7b8e92159b90db18c7881b11d7910d9ca4b68ac6ce253c939a7506d95d6")
-      .then(data => data.json())
-      .then(json => {
-        this.images=json;
-      })
-      .catch(error => alert(error));
-    },
     displayOffers(){
       this.displayoffers=!this.displayoffers;
+    },
+    mySort(array, string) {
+      array.sort(function(a, b) {
+        if (a[string] > b[string]) {
+          return 1;
+        }
+        if (a[string] < b[string]) {
+          return -1;
+        }
+        // a must be equal to b
+        return 0;
+      });
+      return array;
     }
   },
-  computed: {},
+  computed: {
+    offers2 (){
+      return this.mySort(this.$store.getters.getOffers,"fly_duration").slice(0,20).filter(element =>{return element.price<=200});
+    }
+  },
   components: {
     Offers
   },
-  watch: {}
+  watch: {
+
+  },
+  created() {
+    this.$store.dispatch("getOffers");
+  },
+
 };
 </script>
 
@@ -122,7 +132,7 @@ export default {
   padding: 0;
 }
 .container.grid-list-md.text-xs-center {
-    background-color: #ccccf3;
+    background-color:#b2b2f1;
 }
 
 .text-justify {
