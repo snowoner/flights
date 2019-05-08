@@ -44,22 +44,19 @@
                   <strong>LandAway</strong>
                 </p>
               </v-flex>
-              <!-- <v-btn @click="getphotos">GetImagesfker</v-btn>
-              <v-flex xs12>
-                <v-carousel hide-delimiters>
-              
-                <router-link :to="`/flights/${flight}`"> 
-                  <v-carousel-item v-for="(item,i) in this.images" :key="i" :src="item.urls.regular"></v-carousel-item>
-                </router-link>
-                </v-carousel>
-              </v-flex> -->
-              <v-flex xs12>
-          
+              <v-flex xs12 v-for="(image,index) in offers" :key="image.to">
+                <v-card>
+                  <v-img
+                    :src="image.src"
+                  >
+                    <span class="my-span">{{image.to}} {{image.date}}</span>
+                  </v-img>
+                </v-card>
               </v-flex>
-              <v-flex xs12 v-if="offers2">
+              <!-- <v-flex xs12 v-if="offers2">
                 <h2>The last offers we found</h2>
                 <offers v-for="(offer, index) in offers2" :key="offer.flyTo" :offer="offer"></offers>
-              </v-flex>
+              </v-flex>-->
             </v-card>
           </v-flex>
         </v-layout>
@@ -84,6 +81,12 @@ export default {
       ],
       flight: "",
       images: [],
+      offers: [
+        { src: "./mad.jpg", to: "Madrid", date: "30/08/2019" },
+        { src: "./bcn.jpg", to: "Barcelona", date: "30/08/2019" },
+        { src: "./svq.jpg", to: "Sevilla", date: "30/08/2019" },
+        { src: "./tokio.jpg", to: "Tokio", date: "30/08/2019" }
+      ]
     };
   },
   methods: {
@@ -91,39 +94,36 @@ export default {
       if (this.flight) {
         this.$router.push(`/flights/${this.flight}`);
       }
-    },
-    displayOffers(){
-      this.displayoffers=!this.displayoffers;
-    },
-    mySort(array, string) {
-      array.sort(function(a, b) {
-        if (a[string] > b[string]) {
-          return 1;
-        }
-        if (a[string] < b[string]) {
-          return -1;
-        }
-        // a must be equal to b
-        return 0;
-      });
-      return array;
     }
+    // displayOffers(){
+    //   this.displayoffers=!this.displayoffers;
+    // },
+    // mySort(array, string) {
+    //   array.sort(function(a, b) {
+    //     if (a[string] > b[string]) {
+    //       return 1;
+    //     }
+    //     if (a[string] < b[string]) {
+    //       return -1;
+    //     }
+    //     // a must be equal to b
+    //     return 0;
+    //   });
+    //   return array;
+    // }
   },
   computed: {
-    offers2 (){
-      return this.mySort(this.$store.getters.getOffers,"fly_duration").slice(0,20).filter(element =>{return element.price<=200});
-    }
+    // offers2 (){
+    //   return this.$store.getters.getOffer;
+    // }
   },
   components: {
     Offers
   },
-  watch: {
-
-  },
+  watch: {},
   created() {
-    this.$store.dispatch("getOffers");
-  },
-
+    // this.$store.dispatch("getOffer");
+  }
 };
 </script>
 
@@ -132,10 +132,16 @@ export default {
   padding: 0;
 }
 .container.grid-list-md.text-xs-center {
-    background-color:#b2b2f1;
+  background-color: #b2b2f1;
 }
 
 .text-justify {
   text-align: justify;
+}
+
+.my-span {
+  color: white;
+  font-weight: bold;
+  text-align: center;
 }
 </style>
