@@ -1,5 +1,5 @@
 <template>
-<v-container grid-list-md text-xs-center>
+  <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
       <v-flex xs12>
         <v-img class="elevation-5" width="100%" src="../logo.jpg"></v-img>
@@ -27,19 +27,27 @@
                 <p class="headline text-xs-center mb-0">Flights</p>
                 <v-spacer></v-spacer>
               </v-card-title>
-              <v-flex v-if="this.dest!=' '" xs12 grid-list-md text-xs-center>
-              <p> Your dest: {{this.dest}} </p>
-              </v-flex>
-              <v-flex xs12 class="text-justify">
-              
-              </v-flex>
-           
+              <v-container fluid>
+                <v-layout row class="text-center" align-items-center justify-content-center>
+                  <v-flex xs3 >
+                     <p>One Way</p>
+                  </v-flex>
+                  <v-flex xs3>
+                    <v-switch v-model="oneWay"></v-switch>
+                  </v-flex>
+                  <v-flex xs3>
+                    <p>Adults</p>
+                  </v-flex>
+                  <v-flex xs3>
+                    <v-select menu-props="right" v-model="adults" :items="numbers"></v-select>
+                  </v-flex>
+                </v-layout>
+              </v-container>
               <v-flex xs12>
-          
+               
               </v-flex>
-              <v-flex xs12>
- 
-              </v-flex>
+              <v-flex xs12></v-flex>
+              <v-flex xs12></v-flex>
             </v-card>
           </v-flex>
         </v-layout>
@@ -53,7 +61,7 @@
 
 <script>
 export default {
-  props:["dest"],
+  props: ["dest"],
   data() {
     return {
       menu: [
@@ -61,14 +69,22 @@ export default {
         { title: "My Flights", to: "/myflights" },
         { title: "Profile", to: "/profile" }
       ],
-    }
-  },
-}
+      oneWay: true,
+      adults: 1,
+      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    };
+  }
+};
 </script>
 
 
 <style>
+.flex.xs3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .container.grid-list-md.text-xs-center {
-    background-color:#b2b2f1;
+  background-color: #b2b2f1;
 }
 </style>

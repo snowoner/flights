@@ -44,19 +44,28 @@
                   <strong>LandAway</strong>
                 </p>
               </v-flex>
+              <v-flex xs12>
+                <p >See our clients most popular choices:</p>
+              </v-flex>
               <v-flex xs12 v-for="(image,index) in offers" :key="image.to">
+                <router-link :to="`/flights/${image.to.toLowerCase()}`">
                 <v-card>
+                  <span class="my-span">{{image.to}}</span>
                   <v-img
                     :src="image.src"
                   >
-                    <span class="my-span">{{image.to}} {{image.date}}</span>
                   </v-img>
                 </v-card>
+                </router-link>
               </v-flex>
               <!-- <v-flex xs12 v-if="offers2">
                 <h2>The last offers we found</h2>
                 <offers v-for="(offer, index) in offers2" :key="offer.flyTo" :offer="offer"></offers>
               </v-flex>-->
+              <v-btn @click="getLocation">as</v-btn>
+              <v-flex v-for="location in locations" :key="location">
+                <p>{{location}}</p>
+              </v-flex>
             </v-card>
           </v-flex>
         </v-layout>
@@ -82,18 +91,33 @@ export default {
       flight: "",
       images: [],
       offers: [
-        { src: "./mad.jpg", to: "Madrid", date: "30/08/2019" },
-        { src: "./bcn.jpg", to: "Barcelona", date: "30/08/2019" },
-        { src: "./svq.jpg", to: "Sevilla", date: "30/08/2019" },
-        { src: "./tokio.jpg", to: "Tokio", date: "30/08/2019" }
-      ]
-    };
+        { src: "./ita.jpg", to: "Roma" },
+        { src: "./svq.jpg", to: "Sevilla" },
+        { src: "./tokio.jpg", to: "Tokio" },
+        { src: "./mad.jpg", to: "Madrid" }
+      ],
+      lat: 0,
+      lon: 0
+    }
   },
   methods: {
     search() {
       if (this.flight) {
         this.$router.push(`/flights/${this.flight}`);
       }
+    },
+    getLocation() {
+      if (navigator.geolocation) {
+        console.log("yee");
+        navigator.geolocation.getCurrentPosition(this.showPosition);
+      }
+      else{
+        console.log("yaa");
+      }
+    },
+    showPosition(position) {
+      this.lat=position.coords.latitude;
+      this.lon=position.coords.longitude;
     }
     // displayOffers(){
     //   this.displayoffers=!this.displayoffers;
@@ -113,6 +137,9 @@ export default {
     // }
   },
   computed: {
+      locations() {
+        return this.$store.getters.getLocations.map(element => {return element.name});
+      }
     // offers2 (){
     //   return this.$store.getters.getOffer;
     // }
@@ -122,6 +149,8 @@ export default {
   },
   watch: {},
   created() {
+      
+       this.$store.dispatch("getLocations");
     // this.$store.dispatch("getOffer");
   }
 };
@@ -140,7 +169,6 @@ export default {
 }
 
 .my-span {
-  color: white;
   font-weight: bold;
   text-align: center;
 }
