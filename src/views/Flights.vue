@@ -27,16 +27,35 @@
                 <p class="headline text-xs-center mb-0">Flights</p>
                 <v-spacer></v-spacer>
               </v-card-title>
+<!-- Inputs -->
               <v-container fluid>
                 <v-layout row class="text-center" align-items-center justify-content-center>
                   <v-flex xs3>
-                    <p>One Way</p>
+                    <p class="mb-0">One Way</p>
                   </v-flex>
                   <v-flex xs3>
                     <v-switch v-model="oneWay"></v-switch>
                   </v-flex>
+                  <v-flex xs5 class="mt-3">
+                    <v-expansion-panel xs12>
+                      <v-expansion-panel-content md12>
+                        <template v-slot:header>
+                          <div>Class &#38; Travelers</div>
+                        </template>
+                        <v-flex xs12 d-flex>
+                          <v-select :items="clases" v-model="chosenClass" item-text="name" :value="clases.value" label="Class Travelers" box></v-select>
+                        </v-flex>
+                        <v-flex xs12 class="mr-2">
+                            <p>Childrens:</p>
+                        </v-flex>
+                        <v-flex xs12 class="mr-2">
+                          <v-select menu-props="right" v-model="children" :items="numbers"></v-select>
+                        </v-flex>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-flex>
                   <v-flex xs3>
-                    <p>Adults</p>
+                    <p class="mb-0">Adults</p>
                   </v-flex>
                   <v-flex xs3 class="mr-2">
                     <v-select menu-props="right" v-model="adults" :items="numbers"></v-select>
@@ -60,8 +79,8 @@
                 </v-layout>
                 <v-layout row class="text-center mr-3" align-items-center justify-content-center>
                   <v-flex xs6 md6>
-                    <v-container grid-list-md>
-                      <v-layout row wrap class="ml-2">
+                    <v-container grid-list-md class="ml-3">
+                      <v-layout row wrap>
                         <v-flex xs12>
                           <v-menu
                             v-model="menu1"
@@ -90,7 +109,7 @@
                     </v-container>
                   </v-flex>
                   <v-flex v-if="!oneWay" xs6 md6>
-                    <v-container grid-list-md class="ml-3" >
+                    <v-container grid-list-md class="ml-3">
                       <v-layout row wrap>
                         <v-flex xs12>
                           <v-menu
@@ -113,7 +132,12 @@
                                 v-on="on"
                               ></v-text-field>
                             </template>
-                            <v-date-picker v-model="date2" no-title @input="menu2 = false"></v-date-picker>
+                            <v-date-picker
+                              v-model="date2"
+                              :allowed-dates="allowedDates"
+                              no-title
+                              @input="menu2 = false"
+                            ></v-date-picker>
                           </v-menu>
                         </v-flex>
                       </v-layout>
@@ -144,19 +168,24 @@ export default {
         { title: "My Flights", to: "/myflights" },
         { title: "Profile", to: "/profile" }
       ],
+      clases: [{name:"Low cost",value:"lcc"},{name:"Legacy carriers",value:"lc"}],
       oneWay: false,
       adults: 1,
-      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      children: 0,
+      chosenClass:'lcc',
+      numbers: [0 ,1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       date: new Date().toISOString().substr(0, 10),
-
-      date2: new Date().toISOString().substr(0, 10),
-
+      date2: new Date(new Date().setDate(new Date().getDate() + 2))
+        .toISOString()
+        .substr(0, 10),
       menu1: false,
       menu2: false
     };
   },
   methods: {
-   
+    allowedDates(val) {
+      return new Date(val) >= new Date(this.date);
+    },
     formatDate(date) {
       if (!date) return null;
       const [year, month, day] = date.split("-");
@@ -172,14 +201,13 @@ export default {
   },
   computed: {
     departDate() {
-      return this.formatDate(this.date);      
+      return this.formatDate(this.date);
     },
     returnDate() {
       return this.formatDate(this.date2);
     }
   },
-  watch: {
-  }
+  watch: {}
 };
 </script>
 
@@ -193,9 +221,11 @@ export default {
 .container.grid-list-md.text-xs-center {
   background-color: #b2b2f1;
 }
-.container.grid-list-md {
-    padding: 0px;
+
+.container.ml-3.grid-list-md {
+  padding: 0px;
 }
+
 .container.fluid {
   padding: 2px;
 }
@@ -203,7 +233,6 @@ export default {
   max-height: 40px;
 }
 .v-input.v-text-field.v-input--is-label-active.v-input--is-dirty.v-input--is-readonly.theme--light {
-    margin-right: 10px;
+  margin-right: 10px;
 }
-
 </style>
