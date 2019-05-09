@@ -48,7 +48,7 @@
                 <p >See our clients most popular choices:</p>
               </v-flex>
               <v-flex xs12 v-for="(image,index) in offers" :key="image.to">
-                <router-link :to="`/flights/${image.to.toLowerCase()}`">
+                <router-link :to="`/flights/${image.to}`">
                 <v-card>
                   <span class="my-span">{{image.to}}</span>
                   <v-img
