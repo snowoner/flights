@@ -28,9 +28,9 @@ export default new Vuex.Store({
     // setOffer(state, data) {
     //   state.offer = data;
     // }
-    setLocations(state, data) {
-      state.locations = data;
-    }
+    // setLocations(state, data) {
+    //   state.locations = data;
+    // }
   },
   actions: {
     // getOffer(context){
@@ -55,21 +55,21 @@ export default new Vuex.Store({
     //       });
     //   });
     // },
-    getLocations(context) {
-      fetch(context.state.urlLocation)
-        .then(data => data.json())
-        .then(data => {
-          context.commit("setLocations", data.locations);
-        })
-        .then(error => {
-          alert(error);
-        });
-    }
+    // getLocations(context) {
+    //   fetch(context.state.urlLocation)
+    //     .then(data => data.json())
+    //     .then(data => {
+    //       context.commit("setLocations", data.locations);
+    //     })
+    //     .then(error => {
+    //       alert(error);
+    //     });
+    // }
   },
   getters: {
-    getLocations(state) {
-      return state.locations;
-    }
+    // getLocations(state) {
+    //   return state.locations;
+    // }
     // getOffers(state) {
     //   return state.offers;
     // },

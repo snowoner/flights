@@ -62,10 +62,10 @@
                 <h2>The last offers we found</h2>
                 <offers v-for="(offer, index) in offers2" :key="offer.flyTo" :offer="offer"></offers>
               </v-flex>-->
-              <v-btn @click="getLocation">as</v-btn>
+              <!-- <v-btn @click="getLocation">as</v-btn>
               <v-flex v-for="location in locations" :key="location">
                 <p>{{location}}</p>
-              </v-flex>
+              </v-flex> -->
             </v-card>
           </v-flex>
         </v-layout>
@@ -106,19 +106,19 @@ export default {
         this.$router.push(`/flights/${this.flight}`);
       }
     },
-    getLocation() {
-      if (navigator.geolocation) {
-        console.log("yee");
-        navigator.geolocation.getCurrentPosition(this.showPosition);
-      }
-      else{
-        console.log("yaa");
-      }
-    },
-    showPosition(position) {
-      this.lat=position.coords.latitude;
-      this.lon=position.coords.longitude;
-    }
+    // getLocation() {
+    //   if (navigator.geolocation) {
+    //     console.log("yee");
+    //     navigator.geolocation.getCurrentPosition(this.showPosition);
+    //   }
+    //   else{
+    //     console.log("yaa");
+    //   }
+    // },
+    // showPosition(position) {
+    //   this.lat=position.coords.latitude;
+    //   this.lon=position.coords.longitude;
+    // }
     // displayOffers(){
     //   this.displayoffers=!this.displayoffers;
     // },
@@ -137,9 +137,9 @@ export default {
     // }
   },
   computed: {
-      locations() {
-        return this.$store.getters.getLocations.map(element => {return element.name});
-      }
+      // locations() {
+      //   return this.$store.getters.getLocations.map(element => {return element.name});
+      // }
     // offers2 (){
     //   return this.$store.getters.getOffer;
     // }
@@ -150,7 +150,7 @@ export default {
   watch: {},
   created() {
       
-       this.$store.dispatch("getLocations");
+      //  this.$store.dispatch("getLocations");
     // this.$store.dispatch("getOffer");
   }
 };

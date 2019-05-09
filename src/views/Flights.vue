@@ -27,10 +27,10 @@
                 <p class="headline text-xs-center mb-0">Flights</p>
                 <v-spacer></v-spacer>
               </v-card-title>
-              <v-container fluid>
+              <!-- <v-container fluid>
                 <v-layout row class="text-center" align-items-center justify-content-center>
-                  <v-flex xs3 >
-                     <p>One Way</p>
+                  <v-flex xs3>
+                    <p>One Way</p>
                   </v-flex>
                   <v-flex xs3>
                     <v-switch v-model="oneWay"></v-switch>
@@ -43,11 +43,24 @@
                   </v-flex>
                 </v-layout>
               </v-container>
-              <v-flex xs12>
-               
-              </v-flex>
-              <v-flex xs12></v-flex>
-              <v-flex xs12></v-flex>
+              <v-container fluid>
+                <v-layout row class="text-center mr-3" align-items-center justify-content-center>
+                  <v-flex xs4 md4 class="mt-3">
+                    <p>From</p>
+                  </v-flex>
+                  <v-flex xs12 md8>
+                    <v-text-field v-model="from"></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row class="text-center mr-3" align-items-center justify-content-center>
+                  <v-flex xs4 md4 class="mt-3">
+                    <p>To</p>
+                  </v-flex>
+                  <v-flex xs12 md8>
+                    <v-text-field v-model="to"></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-container> -->
             </v-card>
           </v-flex>
         </v-layout>
@@ -64,6 +77,8 @@ export default {
   props: ["dest"],
   data() {
     return {
+      from: "Barcelona",
+      to: this.dest,
       menu: [
         { title: "Home", to: "/home" },
         { title: "My Flights", to: "/myflights" },
@@ -80,11 +95,17 @@ export default {
 
 <style>
 .flex.xs3 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .container.grid-list-md.text-xs-center {
   background-color: #b2b2f1;
+}
+.container.fluid {
+  padding: 2px;
+}
+.mh40 {
+  max-height: 40px;
 }
 </style>
