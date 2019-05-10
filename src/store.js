@@ -6,8 +6,12 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     locations: [],
+    // urlLocation:
+    //   "https://api.skypicker.com/locations?type=radius&&lat=41.3714289&lon=2.1352135&radius=250&locale=en-US&location_types=airport&limit=20&sort=name&active_only=true",
     urlLocation:
-      "https://api.skypicker.com/locations?type=radius&&lat=41.3714289&lon=2.1352135&radius=250&locale=en-US&location_types=airport&limit=20&sort=name&active_only=true"
+      "https://raw.githubusercontent.com/ram-nadella/airport-codes/master/airports.json",
+    airports: []
+    
     // offer: [],
     // offers: [],
     // urls: [
@@ -28,8 +32,11 @@ export default new Vuex.Store({
     // setOffer(state, data) {
     //   state.offer = data;
     // }
-    // setLocations(state, data) {
-    //   state.locations = data;
+    setLocations(state, data) {
+      state.locations = data;
+    }
+    // setAirports(state, data) {
+    //   state.airports = data;
     // }
   },
   actions: {
@@ -55,21 +62,24 @@ export default new Vuex.Store({
     //       });
     //   });
     // },
-    // getLocations(context) {
-    //   fetch(context.state.urlLocation)
-    //     .then(data => data.json())
-    //     .then(data => {
-    //       context.commit("setLocations", data.locations);
-    //     })
-    //     .then(error => {
-    //       alert(error);
-    //     });
-    // }
+    getLocations(context) {
+      fetch(context.state.urlLocation)
+        .then(data => data.json())
+        .then(data => {
+          context.commit("setLocations", data);
+        })
+        .then(error => {
+          console.log(error);
+        });
+    }
   },
   getters: {
-    // getLocations(state) {
-    //   return state.locations;
+    // getAirports(state) {
+    //   return state.airports;
     // }
+    getLocations(state) {
+      return state.locations;
+    }
     // getOffers(state) {
     //   return state.offers;
     // },

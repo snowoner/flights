@@ -27,7 +27,7 @@
                 <p class="headline text-xs-center mb-0">Flights</p>
                 <v-spacer></v-spacer>
               </v-card-title>
-<!-- Inputs -->
+              <!-- Inputs -->
               <v-container fluid>
                 <v-layout row class="text-center" align-items-center justify-content-center>
                   <v-flex xs3>
@@ -43,10 +43,17 @@
                           <div>Class &#38; Travelers</div>
                         </template>
                         <v-flex xs12 d-flex>
-                          <v-select :items="clases" v-model="chosenClass" item-text="name" :value="clases.value" label="Class Travelers" box></v-select>
+                          <v-select
+                            :items="clases"
+                            v-model="chosenClass"
+                            item-text="name"
+                            :value="clases.value"
+                            label="Class Travelers"
+                            box
+                          ></v-select>
                         </v-flex>
                         <v-flex xs12 class="mr-2">
-                            <p>Childrens:</p>
+                          <p>Childrens:</p>
                         </v-flex>
                         <v-flex xs12 class="mr-2">
                           <v-select menu-props="right" v-model="children" :items="numbers"></v-select>
@@ -64,17 +71,31 @@
               </v-container>
               <v-container fluid>
                 <v-layout row class="text-center mr-3" align-items-center justify-content-center>
-                  <v-flex xs2 md2 class="mt-3">
-                    <p class="mb-0 mt-2">From</p>
+                  <v-flex xs6 md6 class="ml-3">
+                    <v-autocomplete
+                      v-model="from"
+                      :items="cities"
+                      hide-no-data
+                      hide-selected
+                      :item-text="citiAndAirport"
+                      item-value="iata"
+                      label="From"
+                      prepend-icon="flight_takeoff"
+                      return-object
+                    ></v-autocomplete>
                   </v-flex>
-                  <v-flex xs4 md4>
-                    <v-text-field v-model="from"></v-text-field>
-                  </v-flex>
-                  <v-flex xs2 md2 class="mt-3 mb-0">
-                    <p class="mb-0 mt-2">To</p>
-                  </v-flex>
-                  <v-flex xs4 md4>
-                    <v-text-field v-model="to"></v-text-field>
+                  <v-flex xs6 md6>
+                    <v-autocomplete
+                      v-model="to"
+                      :items="cities"
+                      hide-no-data
+                      hide-selected
+                      :item-text="citiAndAirport"
+                      item-value="iata"
+                      label="To"
+                      prepend-icon="flight_land"
+                      return-object
+                    ></v-autocomplete>
                   </v-flex>
                 </v-layout>
                 <v-layout row class="text-center mr-3" align-items-center justify-content-center>
@@ -102,7 +123,12 @@
                                 v-on="on"
                               ></v-text-field>
                             </template>
-                            <v-date-picker v-model="date" no-title @input="menu2 = false"></v-date-picker>
+                            <v-date-picker
+                              v-model="date"
+                              @change="checkDate2"
+                              no-title
+                              @input="menu2 = false"
+                            ></v-date-picker>
                           </v-menu>
                         </v-flex>
                       </v-layout>
@@ -149,6 +175,7 @@
           </v-flex>
         </v-layout>
       </v-flex>
+      <v-flex xs12></v-flex>
       <v-flex xs12 class="separated100">
         <strong>LandAway By Oscar Urgelles Marsal</strong>
       </v-flex>
@@ -168,12 +195,15 @@ export default {
         { title: "My Flights", to: "/myflights" },
         { title: "Profile", to: "/profile" }
       ],
-      clases: [{name:"Low cost",value:"lcc"},{name:"Legacy carriers",value:"lc"}],
+      clases: [
+        { name: "Low cost", value: "lcc" },
+        { name: "Legacy carriers", value: "lc" }
+      ],
       oneWay: false,
       adults: 1,
       children: 0,
-      chosenClass:'lcc',
-      numbers: [0 ,1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      chosenClass: "lcc",
+      numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       date: new Date().toISOString().substr(0, 10),
       date2: new Date(new Date().setDate(new Date().getDate() + 2))
         .toISOString()
@@ -183,6 +213,7 @@ export default {
     };
   },
   methods: {
+    citiAndAirport: item => item.city + " — " + item.name,
     allowedDates(val) {
       return new Date(val) >= new Date(this.date);
     },
@@ -197,6 +228,11 @@ export default {
       if (!date) return null;
       const [month, day, year] = date.split("/");
       return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`;
+    },
+    checkDate2() {
+      if (this.date > this.date2) {
+        this.date2 = this.date;
+      }
     }
   },
   computed: {
@@ -205,12 +241,31 @@ export default {
     },
     returnDate() {
       return this.formatDate(this.date2);
+    },
+    locations() {
+      return this.$store.getters.getLocations;
+    },
+    cities() {
+      let citiesReturn = [];
+      for (const key in this.locations) {
+        if (this.locations.hasOwnProperty(key)) {
+          const element = this.locations[key];
+          citiesReturn.push({
+            city: element.city,
+            iata: element.iata,
+            name: element.name
+          });
+        }
+      }
+      return citiesReturn;
     }
   },
-  watch: {}
+  watch: {},
+  created() {
+    this.$store.dispatch("getLocations");
+  }
 };
 </script>
-
 
 <style>
 .flex.xs3 {
