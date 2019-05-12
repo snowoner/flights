@@ -36,7 +36,7 @@
                   <v-flex xs3>
                     <v-switch v-model="oneWay"></v-switch>
                   </v-flex>
-                  <v-flex xs5 class="mt-3">
+                  <v-flex xs5 class="mt-3 mr-3">
                     <v-menu xs6>
                       <v-btn  class="small" slot="activator">Class &#38; Travelers</v-btn>
                       <v-list>
