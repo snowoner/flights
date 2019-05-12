@@ -29,7 +29,18 @@
               </v-card-title>
               <v-flex xs12 grid-list-md text-xs-center>
                 <v-layout row class="text-center">
-                  <v-text-field prepend-icon="search" v-model="flight" label="your destination"></v-text-field>
+                  <v-autocomplete
+                      v-model="flight"
+                      :items="cities"
+                      hide-no-data
+                      hide-selected
+                      :item-text="citiAndAirport"
+                      item-value="iata"
+                      label="your destination"
+                      prepend-icon="search"
+                      return-object
+                      class="caption"
+                    ></v-autocomplete>
                   <v-btn class="mt-3" @click="search">Search</v-btn>
                 </v-layout>
               </v-flex>
@@ -48,7 +59,7 @@
                 <p >See our clients most popular choices:</p>
               </v-flex>
               <v-flex xs12 v-for="(image,index) in offers" :key="image.to">
-                <router-link :to="`/flights/${image.to}`">
+                <router-link :to="`/flights/${image.iata}`">
                 <v-card>
                   <span class="my-span">{{image.to}}</span>
                   <v-img
@@ -88,37 +99,26 @@ export default {
         { title: "My Flights", to: "/myflights" },
         { title: "Profile", to: "/profile" }
       ],
-      flight: "",
+      flight: null,
       images: [],
       offers: [
-        { src: "./ita.jpg", to: "Roma" },
-        { src: "./svq.jpg", to: "Sevilla" },
-        { src: "./tokio.jpg", to: "Tokio" },
-        { src: "./mad.jpg", to: "Madrid" }
+        { src: "./ita.jpg", to: "Roma", iata:"FCO" },
+        { src: "./svq.jpg", to: "Sevilla", iata: "SVQ"},
+        { src: "./tokio.jpg", to: "Tokio", iata: "HND"},
+        { src: "./mad.jpg", to: "Madrid", iata: "MAD"}
       ],
       lat: 0,
       lon: 0
     }
   },
   methods: {
+    citiAndAirport: item => item.city + "-" + item.name,
     search() {
       if (this.flight) {
-        this.$router.push(`/flights/${this.flight}`);
+        this.$router.push(`/flights/${this.flight.iata}`);
       }
     },
-    // getLocation() {
-    //   if (navigator.geolocation) {
-    //     console.log("yee");
-    //     navigator.geolocation.getCurrentPosition(this.showPosition);
-    //   }
-    //   else{
-    //     console.log("yaa");
-    //   }
-    // },
-    // showPosition(position) {
-    //   this.lat=position.coords.latitude;
-    //   this.lon=position.coords.longitude;
-    // }
+   
     // displayOffers(){
     //   this.displayoffers=!this.displayoffers;
     // },
@@ -143,6 +143,23 @@ export default {
     // offers2 (){
     //   return this.$store.getters.getOffer;
     // }
+    cities() {
+      let citiesReturn = [];
+      for (const key in this.destinations) {
+        if (this.destinations.hasOwnProperty(key)) {
+          const element = this.destinations[key];
+          citiesReturn.push({
+            city: element.city,
+            iata: element.iata,
+            name: element.name
+          });
+        }
+      }
+      return citiesReturn;
+    },
+    destinations(){
+      return this.$store.getters.getLocations;
+    }
   },
   components: {
     Offers
@@ -150,7 +167,7 @@ export default {
   watch: {},
   created() {
       
-      //  this.$store.dispatch("getLocations");
+     this.$store.dispatch("getLocations");
     // this.$store.dispatch("getOffer");
   }
 };

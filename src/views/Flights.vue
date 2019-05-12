@@ -37,8 +37,30 @@
                     <v-switch v-model="oneWay"></v-switch>
                   </v-flex>
                   <v-flex xs5 class="mt-3">
-                    <v-expansion-panel xs12>
-                      <v-expansion-panel-content md12>
+                    <v-menu xs6>
+                      <v-btn  class="small" slot="activator">Class &#38; Travelers</v-btn>
+                      <v-list>
+                         <v-flex xs12  @click.stop> 
+                          <v-select class="ml-3 mr-3"
+                            :items="clases"
+                            v-model="chosenClass"
+                            item-text="name"
+                            :value="clases.value"
+                            label="Class Travelers"
+                            box
+                            chips
+                          ></v-select>
+                          
+                          </v-flex>
+                          <v-flex xs12  @click.stop>
+                          <v-select class="ml-3 mr-3" menu-props="right" chips label="Childrens" v-model="children" :items="numbersC"></v-select>
+                          </v-flex>
+                      </v-list>
+                    </v-menu>
+                  </v-flex>
+                  <!-- <v-flex xs5 class="mt-3">
+                    <v-expansion-panel class="p-0" xs12>
+                      <v-expansion-panel-content class="p-0" xs12 md12>
                         <template v-slot:header>
                           <div>Class &#38; Travelers</div>
                         </template>
@@ -56,22 +78,27 @@
                           <p>Childrens:</p>
                         </v-flex>
                         <v-flex xs12 class="mr-2">
-                          <v-select menu-props="right" v-model="children" :items="numbers"></v-select>
+                          <v-select menu-props="right" v-model="children" :items="numbersC"></v-select>
                         </v-flex>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
-                  </v-flex>
+                  </v-flex> -->
                   <v-flex xs3>
                     <p class="mb-0">Adults</p>
                   </v-flex>
                   <v-flex xs3 class="mr-2">
-                    <v-select menu-props="right" v-model="adults" :items="numbers"></v-select>
+                    <v-select menu-props="right"  chips v-model="adults" :items="numbers"></v-select>
                   </v-flex>
                 </v-layout>
               </v-container>
               <v-container fluid>
-                <v-layout row class="text-center mr-3" align-items-center justify-content-center>
-                  <v-flex xs6 md6 class="ml-3">
+                <v-layout
+                  row
+                  class="text-center mr-3 ml-3"
+                  align-items-center
+                  justify-content-center
+                >
+                  <v-flex xs10 md10>
                     <v-autocomplete
                       v-model="from"
                       :items="cities"
@@ -82,9 +109,22 @@
                       label="From"
                       prepend-icon="flight_takeoff"
                       return-object
+                      class="caption"
                     ></v-autocomplete>
                   </v-flex>
-                  <v-flex xs6 md6>
+                  <v-flex xs2 md2>
+                    <v-btn fab small @click="from=null" :disabled="!from">
+                      <v-icon>clear</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+                <v-layout
+                  row
+                  class="text-center ml-3 mr-3"
+                  align-items-center
+                  justify-content-center
+                >
+                  <v-flex xs10 md10>
                     <v-autocomplete
                       v-model="to"
                       :items="cities"
@@ -95,7 +135,13 @@
                       label="To"
                       prepend-icon="flight_land"
                       return-object
+                      class="caption"
                     ></v-autocomplete>
+                  </v-flex>
+                  <v-flex xs2 md2>
+                    <v-btn @click="to=null" :disabled="!to" fab small>
+                      <v-icon>clear</v-icon>
+                    </v-btn>
                   </v-flex>
                 </v-layout>
                 <v-layout row class="text-center mr-3" align-items-center justify-content-center>
@@ -111,7 +157,7 @@
                             transition="scale-transition"
                             offset-y
                             full-width
-                            max-width="290px"
+                            max-width="300px"
                             min-width="290px"
                           >
                             <template v-slot:activator="{ on }">
@@ -125,9 +171,10 @@
                             </template>
                             <v-date-picker
                               v-model="date"
+                              :allowed-dates="allowedDates2"
                               @change="checkDate2"
                               no-title
-                              @input="menu2 = false"
+                              @input="menu1 = false"
                             ></v-date-picker>
                           </v-menu>
                         </v-flex>
@@ -171,6 +218,12 @@
                   </v-flex>
                 </v-layout>
               </v-container>
+              <v-container>
+                <v-layout xs6>
+                  
+                </v-layout>
+              </v-container>
+              <!--fin container-->
             </v-card>
           </v-flex>
         </v-layout>
@@ -188,8 +241,14 @@ export default {
   props: ["dest"],
   data() {
     return {
-      from: "Barcelona",
-      to: this.dest,
+      from: {
+        iata: "BCN"
+      },
+      to: {
+        iata: this.dest
+      },
+
+      // to: {city:this.dest, iata:null, name:this.dest},
       menu: [
         { title: "Home", to: "/home" },
         { title: "My Flights", to: "/myflights" },
@@ -203,7 +262,8 @@ export default {
       adults: 1,
       children: 0,
       chosenClass: "lcc",
-      numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      numbersC: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       date: new Date().toISOString().substr(0, 10),
       date2: new Date(new Date().setDate(new Date().getDate() + 2))
         .toISOString()
@@ -213,9 +273,22 @@ export default {
     };
   },
   methods: {
-    citiAndAirport: item => item.city + " — " + item.name,
+    //  getUserLocation() {
+    //       if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(this.showPosition);
+    //       }
+    //     },
+    //     showPosition(position) {
+    //       this.lat=position.coords.latitude;
+    //       this.lon=position.coords.longitude;
+    //     },
+
+    citiAndAirport: item => item.city + "-" + item.name,
     allowedDates(val) {
       return new Date(val) >= new Date(this.date);
+    },
+    allowedDates2(val) {
+      return new Date(val) >= new Date().setDate(new Date().getDate() - 1);
     },
     formatDate(date) {
       if (!date) return null;
@@ -253,7 +326,9 @@ export default {
           citiesReturn.push({
             city: element.city,
             iata: element.iata,
-            name: element.name
+            name: element.name,
+            lat: element.latitude,
+            lon: element.longitude
           });
         }
       }
@@ -262,6 +337,7 @@ export default {
   },
   watch: {},
   created() {
+    // this.getUserLocation();
     this.$store.dispatch("getLocations");
   }
 };
@@ -281,6 +357,27 @@ export default {
   padding: 0px;
 }
 
+.small {
+    font-size: 10px;
+}
+
+.v-list.theme--light {
+    max-width: 170px;
+}
+
+input[type="text"] {
+    max-width: 185px;
+}
+a.v-list__tile.v-list__tile--link.theme--light {
+    max-width: 400px;
+    width: 231px;
+}
+
+button.v-btn.theme--light {
+    max-width: 40px;
+        white-space: wrap;
+            text-transform: none;
+}
 .container.fluid {
   padding: 2px;
 }
@@ -289,5 +386,8 @@ export default {
 }
 .v-input.v-text-field.v-input--is-label-active.v-input--is-dirty.v-input--is-readonly.theme--light {
   margin-right: 10px;
+}
+.v-expansion-panel__header {
+  padding: 2px;
 }
 </style>
