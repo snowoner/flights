@@ -38,10 +38,11 @@
                   </v-flex>
                   <v-flex xs5 class="mt-3 mr-3">
                     <v-menu xs6>
-                      <v-btn  class="small" slot="activator">Class &#38; Travelers</v-btn>
+                      <v-btn class="small" slot="activator">Class &#38; Travelers</v-btn>
                       <v-list>
-                         <v-flex xs12  @click.stop> 
-                          <v-select class="ml-3 mr-3"
+                        <v-flex xs12 @click.stop>
+                          <v-select
+                            class="ml-3 mr-3"
                             :items="clases"
                             v-model="chosenClass"
                             item-text="name"
@@ -50,44 +51,25 @@
                             box
                             chips
                           ></v-select>
-                          
-                          </v-flex>
-                          <v-flex xs12  @click.stop>
-                          <v-select class="ml-3 mr-3" menu-props="right" chips label="Childrens" v-model="children" :items="numbersC"></v-select>
-                          </v-flex>
+                        </v-flex>
+                        <v-flex xs12 @click.stop>
+                          <v-select
+                            class="ml-3 mr-3"
+                            menu-props="right"
+                            chips
+                            label="Childrens"
+                            v-model="children"
+                            :items="numbersC"
+                          ></v-select>
+                        </v-flex>
                       </v-list>
                     </v-menu>
                   </v-flex>
-                  <!-- <v-flex xs5 class="mt-3">
-                    <v-expansion-panel class="p-0" xs12>
-                      <v-expansion-panel-content class="p-0" xs12 md12>
-                        <template v-slot:header>
-                          <div>Class &#38; Travelers</div>
-                        </template>
-                        <v-flex xs12 d-flex>
-                          <v-select
-                            :items="clases"
-                            v-model="chosenClass"
-                            item-text="name"
-                            :value="clases.value"
-                            label="Class Travelers"
-                            box
-                          ></v-select>
-                        </v-flex>
-                        <v-flex xs12 class="mr-2">
-                          <p>Childrens:</p>
-                        </v-flex>
-                        <v-flex xs12 class="mr-2">
-                          <v-select menu-props="right" v-model="children" :items="numbersC"></v-select>
-                        </v-flex>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-flex> -->
                   <v-flex xs3>
                     <p class="mb-0">Adults</p>
                   </v-flex>
                   <v-flex xs3 class="mr-2">
-                    <v-select menu-props="right"  chips v-model="adults" :items="numbers"></v-select>
+                    <v-select menu-props="right" chips v-model="adults" :items="numbers"></v-select>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -218,10 +200,58 @@
                   </v-flex>
                 </v-layout>
               </v-container>
-              <v-container>
-                <v-layout xs6>
-                  
+              <v-container fluid>
+                <v-layout
+                  row
+                  class="text-center mr-3 ml-3"
+                  align-items-center
+                  justify-content-center
+                >
+                  <v-flex xs12 md12>
+                    <div>
+                      <v-btn color="success" @click="search" dark large round>
+                        <v-icon>search</v-icon>Search your Flight
+                      </v-btn>
+                    </div>
+                  </v-flex>
                 </v-layout>
+                <v-layout>
+                  <v-flex v-if="loading" xs12>
+                    <v-card>
+                      <v-progress-linear :indeterminate="true"></v-progress-linear>
+                    </v-card>
+                  </v-flex>
+                </v-layout>
+
+                <v-flex>
+                  <v-card v-for="(flight,index) in results" :key="flight.id" class="centerCol">
+                    <v-flex
+                      v-for="(route, index) in flight.route"
+                      :key="route.id"
+                      class="centerCol"
+                      xs12
+                    >
+                      <v-flex class="center" xs12>
+                        <strong>{{route.cityFrom}}</strong>
+                        <span>( {{convert(route.dTimeUTC)}} )</span>
+                        <v-icon>arrow_right</v-icon>
+                        <span>( {{convert(route.aTimeUTC)}} )</span>
+                        <strong>{{route.cityTo}}</strong> 
+                          
+                         <v-img class="ml-3" width="20px" height="20px" :src="`https://images.kiwi.com/airlines/128/${route.airline}.png`"></v-img>
+                      </v-flex>
+                    </v-flex>
+                      <v-flex xs12 class="center w300" >
+                        <v-card-text class="ml-1 p0">Way: </v-card-text>
+                        <v-card-text class="ml-1 mr-1 p0">{{flight.fly_duration}}</v-card-text>
+                        <v-card-text class="ml-1 mr-1 p0">Return: </v-card-text>
+                        <v-card-text class="ml-1 p0">{{flight.return_duration}}</v-card-text>
+                      </v-flex>
+                    <v-flex>
+                      <v-btn :href="flight.deep_link">{{flight.price}}€</v-btn>
+                    </v-flex>
+                  </v-card>
+                </v-flex>
               </v-container>
               <!--fin container-->
             </v-card>
@@ -269,7 +299,8 @@ export default {
         .toISOString()
         .substr(0, 10),
       menu1: false,
-      menu2: false
+      menu2: false,
+      first_search: null
     };
   },
   methods: {
@@ -282,7 +313,22 @@ export default {
     //       this.lat=position.coords.latitude;
     //       this.lon=position.coords.longitude;
     //     },
-
+    convert(val) {
+      // Convert timestamp to milliseconds
+      let date = new Date(val * 1000);
+      let convdataTime = `${date.getHours()}:${
+        date
+          .getMinutes()
+          .toString()
+          .substr(-2) == 0
+          ? "00"
+          : date
+              .getMinutes()
+              .toString()
+              .substr(-2)
+      }`;
+      return convdataTime;
+    },
     citiAndAirport: item => item.city + "-" + item.name,
     allowedDates(val) {
       return new Date(val) >= new Date(this.date);
@@ -296,7 +342,13 @@ export default {
 
       return `${day}/${month}/${year}`;
     },
-
+    // checkFrom(){
+    //     if(this.to.iata) {
+    //       if(this.to.iata==this.from.iata){
+    //         this.to.iata==null;
+    //       }
+    //     }
+    // },
     parseDate(date) {
       if (!date) return null;
       const [month, day, year] = date.split("/");
@@ -306,9 +358,33 @@ export default {
       if (this.date > this.date2) {
         this.date2 = this.date;
       }
+    },
+    search() {
+      let datos = {
+        from: this.from.iata,
+        to: this.to.iata,
+        departDate: this.departDate,
+        returnDate: this.returnDate,
+        oneWay: this.oneWay,
+        adults: this.adults,
+        children: this.children,
+        type: this.chosenClass
+      };
+      this.$store.dispatch("getFlights", datos);
+      this.first_search = true;
     }
   },
   computed: {
+    numResults() {
+      return this.$store.getters.getNumResults;
+    },
+    loading() {
+      return this.$store.getters.getLoading;
+    },
+    results() {
+      return this.$store.getters.getFlights;
+    },
+
     departDate() {
       return this.formatDate(this.date);
     },
@@ -335,7 +411,12 @@ export default {
       return citiesReturn;
     }
   },
-  watch: {},
+  watch: {
+    // to: {
+    //   handler: "checkFrom",
+    //   immediate: true
+    // }
+  },
   created() {
     // this.getUserLocation();
     this.$store.dispatch("getLocations");
@@ -352,31 +433,36 @@ export default {
 .container.grid-list-md.text-xs-center {
   background-color: #b2b2f1;
 }
-
+.w300{
+  width: 300px;
+}
 .container.ml-3.grid-list-md {
   padding: 0px;
 }
 
 .small {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 .v-list.theme--light {
-    max-width: 170px;
+  max-width: 170px;
 }
 
+.p0 {
+  padding: 0px;
+}
 input[type="text"] {
-    max-width: 185px;
+  max-width: 185px;
 }
 a.v-list__tile.v-list__tile--link.theme--light {
-    max-width: 400px;
-    width: 231px;
+  max-width: 400px;
+  width: 231px;
 }
 
 button.v-btn.theme--light {
-    max-width: 40px;
-        white-space: wrap;
-            text-transform: none;
+  max-width: 40px;
+  white-space: wrap;
+  text-transform: none;
 }
 .container.fluid {
   padding: 2px;
@@ -390,4 +476,16 @@ button.v-btn.theme--light {
 .v-expansion-panel__header {
   padding: 2px;
 }
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.centerCol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 </style>
