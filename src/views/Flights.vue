@@ -232,21 +232,27 @@
                       xs12
                     >
                       <v-flex class="center" xs12>
-                        <strong>{{route.cityFrom}}</strong>
+                        <span>{{convertDay(route.dTimeUTC)}}</span>
+                        <strong class="ml-1">{{route.cityFrom}}</strong>
                         <span>( {{convert(route.dTimeUTC)}} )</span>
                         <v-icon>arrow_right</v-icon>
                         <span>( {{convert(route.aTimeUTC)}} )</span>
-                        <strong>{{route.cityTo}}</strong> 
-                          
-                         <v-img class="ml-3" width="20px" height="20px" :src="`https://images.kiwi.com/airlines/128/${route.airline}.png`"></v-img>
+                        <strong>{{route.cityTo}}</strong>
+
+                        <v-img
+                          class="ml-3"
+                          width="20px"
+                          height="20px"
+                          :src="`https://images.kiwi.com/airlines/128/${route.airline}.png`"
+                        ></v-img>
                       </v-flex>
                     </v-flex>
-                      <v-flex xs12 class="center w300" >
-                        <v-card-text class="ml-1 p0">Way: </v-card-text>
-                        <v-card-text class="ml-1 mr-1 p0">{{flight.fly_duration}}</v-card-text>
-                        <v-card-text class="ml-1 mr-1 p0">Return: </v-card-text>
-                        <v-card-text class="ml-1 p0">{{flight.return_duration}}</v-card-text>
-                      </v-flex>
+                    <v-flex xs12 class="center w300">
+                      <v-card-text class="ml-1 p0">Way:</v-card-text>
+                      <v-card-text class="ml-1 mr-1 p0">{{flight.fly_duration}}</v-card-text>
+                      <v-card-text class="ml-1 mr-1 p0">Return:</v-card-text>
+                      <v-card-text class="ml-1 p0">{{flight.return_duration}}</v-card-text>
+                    </v-flex>
                     <v-flex>
                       <v-btn :href="flight.deep_link">{{flight.price}}€</v-btn>
                     </v-flex>
@@ -327,6 +333,33 @@ export default {
               .toString()
               .substr(-2)
       }`;
+      return convdataTime;
+    },
+    convertDay(val) {
+      // Convert timestamp to milliseconds
+      let date = new Date(val * 1000);
+      var months_arr = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ];
+
+      // Month
+      var month = months_arr[date.getMonth()];
+
+      // Day
+      var day = date.getDate();
+
+      let convdataTime = `${day}-${month}`;
       return convdataTime;
     },
     citiAndAirport: item => item.city + "-" + item.name,
@@ -433,7 +466,7 @@ export default {
 .container.grid-list-md.text-xs-center {
   background-color: #b2b2f1;
 }
-.w300{
+.w300 {
   width: 300px;
 }
 .container.ml-3.grid-list-md {
@@ -487,5 +520,4 @@ button.v-btn.theme--light {
   justify-content: center;
   flex-direction: column;
 }
-
 </style>
