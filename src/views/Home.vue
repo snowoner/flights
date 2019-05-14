@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import Offers from "../components/Offers.vue";
+
 
 export default {
   data() {
@@ -161,9 +161,6 @@ export default {
     destinations(){
       return this.$store.getters.getLocations;
     }
-  },
-  components: {
-    Offers
   },
   watch: {},
   created() {
