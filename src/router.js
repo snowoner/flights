@@ -7,14 +7,19 @@ import Myflights from "./views/Myflights.vue";
 import Forgot from "./views/Forgot.vue";
 import Register from "./views/Register.vue";
 import Profile from "./views/Profile.vue";
+import firebase from 'firebase';
 
 
 Vue.use(Router);
 
-export default new Router({
+const router= new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
+    {
+      path: "*",
+      redirect: "/"
+    },
     {
       path: "/",
       name: "login",
@@ -33,23 +38,46 @@ export default new Router({
     {
       path: "/home",
       name: "home",
-      component: Home
+      component: Home,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/flights/:dest",
       name: "flights",
       component: Flights,
-      props: true
+      props: true,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/myflights",
       name: "myflights",
-      component: Myflights
+      component: Myflights,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/profile",
       name: "profile",
-      component: Profile
-    },
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
+    }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  // to and from are both route objects. must call `next`.
+  const currentUser = firebase.auth().currentUser;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  if (requiresAuth && !currentUser) next("login");
+  else if (!requiresAuth && currentUser) next("home");
+  else next();
+});
+
+export default router;

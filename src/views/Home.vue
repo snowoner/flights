@@ -83,6 +83,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 class="separated100">
+        <v-btn @click="logout">Logout</v-btn>
         <strong>LandAway By Oscar Urgelles Marsal</strong>
       </v-flex>
     </v-layout>
@@ -90,7 +91,7 @@
 </template>
 
 <script>
-
+import firebase from 'firebase';
 
 export default {
   data() {
@@ -119,6 +120,11 @@ export default {
         this.$router.push(`/flights/${this.flight.iata}`);
       }
     },
+    logout() {
+      firebase.auth().signOut().then(()=>{
+        this.$router.replace("login");
+      })
+    }
    
     // displayOffers(){
     //   this.displayoffers=!this.displayoffers;

@@ -13,22 +13,18 @@
             <v-form>
               <h2><strong>Welcome to LandAway</strong></h2>
               <v-text-field
-                prepend-icon="person"
-                name="name"
-                label="Name"
-                type="text"
-              ></v-text-field>
-              <v-text-field
                 prepend-icon="email"
                 name="email"
+                v-model="email"
                 label="Email"
                 type="email"
               ></v-text-field>
-              <v-text-field
-                prepend-icon="phone"
-                name="phone"
-                label="Phone"
-                type="phone"
+                <v-text-field
+                prepend-icon="lock"
+                name="password"
+                v-model="password"
+                label="Password"
+                type="password"
               ></v-text-field>
             </v-form>
           </v-card-text>
@@ -48,16 +44,25 @@
 </template>
 
 <script>
+
+import firebase from 'firebase';
+
 export default {
   data() {
     return {
-      
+      email:'',
+      password:''
     }
   },
   methods: {
     validate(){
-      console.log("You registered correctly!");
-      this.$router.push("/");
+      firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(()=>{
+          this.$router.replace("home");
+      })
+      .catch(function(error) {
+          console.log(error);
+    });
+      
     }
   },
 }

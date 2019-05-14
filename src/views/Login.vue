@@ -13,6 +13,7 @@
               <v-text-field
                 prepend-icon="person"
                 name="user"
+                v-model="user"
                 placeholder="Phone or Email"
                 label="User"
                 type="text"
@@ -21,6 +22,7 @@
                 prepend-icon="lock"
                 name="password"
                 label="Password"
+                v-model="password"
                 id="password"
                 type="password"
               ></v-text-field>
@@ -45,14 +47,25 @@
 </template>
 
 <script>
+import firebase from 'firebase';
+
 export default {
   data() {
-    return {};
+    return {
+      user:'',
+      password:''
+    };
   },
   methods: {
     validate() {
-      console.log("Te has validado ok");
-      this.$router.push("home");
+      firebase.auth().signInWithEmailAndPassword(this.user,this.password)
+      .then(user=>{
+        alert("Registrado");
+        this.$router.push("home");
+        })
+      .catch(err =>{alert("Prueva hasta que te canses")});
+      // console.log("Te has validado ok");
+      
     }
   }
 };
