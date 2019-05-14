@@ -80,7 +80,7 @@
                   align-items-center
                   justify-content-center
                 >
-                  <v-flex xs10 md10>
+                  <v-flex xs12 md12>
                     <v-autocomplete
                       v-model="from"
                       :items="cities"
@@ -89,16 +89,14 @@
                       :item-text="citiAndAirport"
                       item-value="iata"
                       label="From"
+                      
+                      clearable
                       prepend-icon="flight_takeoff"
                       return-object
                       class="caption"
                     ></v-autocomplete>
                   </v-flex>
-                  <v-flex xs2 md2>
-                    <v-btn fab small @click="from=null" :disabled="!from">
-                      <v-icon>clear</v-icon>
-                    </v-btn>
-                  </v-flex>
+                  
                 </v-layout>
                 <v-layout
                   row
@@ -106,7 +104,7 @@
                   align-items-center
                   justify-content-center
                 >
-                  <v-flex xs10 md10>
+                  <v-flex xs12 md12>
                     <v-autocomplete
                       v-model="to"
                       :items="cities"
@@ -115,16 +113,14 @@
                       :item-text="citiAndAirport"
                       item-value="iata"
                       label="To"
+                      
+                      clearable
                       prepend-icon="flight_land"
                       return-object
                       class="caption"
                     ></v-autocomplete>
                   </v-flex>
-                  <v-flex xs2 md2>
-                    <v-btn @click="to=null" :disabled="!to" fab small>
-                      <v-icon>clear</v-icon>
-                    </v-btn>
-                  </v-flex>
+              
                 </v-layout>
                 <v-layout row class="text-center mr-3" align-items-center justify-content-center>
                   <v-flex xs6 md6>
@@ -224,7 +220,9 @@
                 </v-layout>
 
                 <v-flex>
-                  <v-card v-for="(flight,index) in results" :key="flight.id" class="centerCol">
+                  
+                  <v-card v-for="(flight,index) in results" :key="flight.id"  class="centerCol" >
+                    
                     <v-flex
                       v-for="(route, index) in flight.route"
                       :key="route.id"
@@ -232,15 +230,28 @@
                       xs12
                     >
                       <v-flex class="center" xs12>
-                        <span>{{convertDay(route.dTimeUTC)}}</span>
-                        <strong class="ml-1">{{route.cityFrom}}</strong>
-                        <span>( {{convert(route.dTimeUTC)}} )</span>
+                        <span class="mr-1">{{convertDay(route.dTimeUTC)}}</span>
+
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on }">
+                            <strong v-on="on">{{route.flyFrom}}</strong>
+                          </template>
+                          <span>{{route.cityFrom}}</span>
+                        </v-tooltip>
+
+                      
+                        <span class="ml-1 mr-1">( {{convert(route.dTimeUTC)}} )</span>
                         <v-icon>arrow_right</v-icon>
-                        <span>( {{convert(route.aTimeUTC)}} )</span>
-                        <strong>{{route.cityTo}}</strong>
+                        <span class="ml-1 mr-1">( {{convert(route.aTimeUTC)}} )</span>
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on }">
+                            <strong v-on="on">{{route.flyTo}}</strong>
+                          </template>
+                          <span>{{route.cityTo}}</span>
+                        </v-tooltip>
 
                         <v-img
-                          class="ml-3"
+                          class="ml-1"
                           width="20px"
                           height="20px"
                           :src="`https://images.kiwi.com/airlines/128/${route.airline}.png`"
@@ -248,15 +259,22 @@
                       </v-flex>
                     </v-flex>
                     <v-flex xs12 class="center w300">
-                      <v-card-text class="ml-1 p0">Way:</v-card-text>
+                      <v-card-text class="ml-1 p0">Fly:</v-card-text>
                       <v-card-text class="ml-1 mr-1 p0">{{flight.fly_duration}}</v-card-text>
-                      <v-card-text class="ml-1 mr-1 p0">Return:</v-card-text>
-                      <v-card-text class="ml-1 p0">{{flight.return_duration}}</v-card-text>
+                      <v-card-text v-if="!oneWay" class="ml-1 mr-1 p0">Return:</v-card-text>
+                      <v-card-text v-if="!oneWay" class="ml-1 p0">{{flight.return_duration}}</v-card-text>
                     </v-flex>
                     <v-flex>
                       <v-btn :href="flight.deep_link">{{flight.price}}€</v-btn>
                     </v-flex>
                   </v-card>
+                  <v-flex v-if="numResults==0 && !loading">
+                    <v-card>
+                      <v-card-text>
+                        <h3>Sorry no flights abiable whit that criteria</h3>
+                      </v-card-text>
+                    </v-card>
+                  </v-flex>
                 </v-flex>
               </v-container>
               <!--fin container-->
@@ -298,8 +316,8 @@ export default {
       adults: 1,
       children: 0,
       chosenClass: "lcc",
-      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      numbersC: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      numbersC: [0, 1, 2, 3, 4, 5],
       date: new Date().toISOString().substr(0, 10),
       date2: new Date(new Date().setDate(new Date().getDate() + 2))
         .toISOString()

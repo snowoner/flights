@@ -35,8 +35,9 @@
                       hide-no-data
                       hide-selected
                       :item-text="citiAndAirport"
+                      clearable
                       item-value="iata"
-                      label="your destination"
+                      label="Your destination"
                       prepend-icon="search"
                       return-object
                       class="caption"
