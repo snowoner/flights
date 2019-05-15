@@ -13,7 +13,9 @@ export default new Vuex.Store({
     airports: [],
     flights: [],
     loading: false,
-    numResults: null
+    numResults: null,
+    selectFlight: null,
+    user: null
 
     // offer: [],
     // offers: [],
@@ -35,6 +37,9 @@ export default new Vuex.Store({
     // setOffer(state, data) {
     //   state.offer = data;
     // }
+    setUser(state, data) {
+      state.user = data;
+    },
     setLocations(state, data) {
       state.locations = data;
     },
@@ -46,6 +51,9 @@ export default new Vuex.Store({
     },
     setNumResults(state, data) {
       state.numResults = data;
+    },
+    setSelectFlight(state, data) {
+      state.selectFlight = data;
     }
     // setAirports(state, data) {
     //   state.airports = data;
@@ -122,6 +130,9 @@ export default new Vuex.Store({
     // getAirports(state) {
     //   return state.airports;
     // }
+    getUser(state) {
+      return state.user;
+    },
     getLocations(state) {
       return state.locations;
     },
@@ -133,6 +144,9 @@ export default new Vuex.Store({
     },
     getNumResults(state) {
       return state.numResults;
+    },
+    getSelectFlight(state) {
+      return state.selectFlight;
     }
     // getOffers(state) {
     //   return state.offers;

@@ -104,13 +104,13 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
-          this.$router.push("home");
+          console.log(user);
+          this.$store.commit("setUser", user);
+          this.$router.replace("myflights");  //this will be changed
         })
         .catch(error => {
-          console.log(error);
           this.errores=error.message;
         });
-      console.log("Te has validado ok");
         })
         .catch(() => {});
 
@@ -122,7 +122,8 @@ export default {
         .auth()
         .signInWithPopup(provider)
         .then(user => {
-          this.$router.push("home");
+          this.$store.commit("setUser", user);
+          this.$router.replace("myflights");  //this will be changed
         })
         .catch(error => {
           this.errores = error.message;

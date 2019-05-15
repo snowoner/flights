@@ -35,19 +35,45 @@
       <v-card-text v-if="!this.oneWay" class="ml-1 mr-1 p0">Return:</v-card-text>
       <v-card-text v-if="!this.oneWay" class="ml-1 p0">{{flight.return_duration}}</v-card-text>
     </v-flex>
-    <v-flex>
-      <v-btn :href="flight.deep_link">{{flight.price}}€</v-btn>
+    <v-flex v-if="user">
+      <v-btn @click="book(flight.deep_link)">{{flight.price}}€</v-btn>
+    </v-flex>
+    <v-flex v-if="!user">
+    <v-layout row justify-center>
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <template v-slot:activator="{ on }">
+         <v-btn v-on="on" @click="book(flight.deep_link)">{{flight.price}}€</v-btn>
+        </template>
+        <v-card>
+          <v-card-title class="headline">Not registered yet?</v-card-title>
+          <v-card-text>You have to be registered to purchase this flight</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="dissmiss">I will do it later</v-btn>
+             <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="proceed">Proceed to register</v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
     </v-flex>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: ["flight","oneWay"],
+  props: ["flight", "oneWay"],
   data() {
-    return {};
+    return {
+      dialog: false
+    };
   },
   methods: {
+    book(deep_link) {
+      this.$store.commit("setSelectFlight", this.flight);
+      // window.open(deep_link);
+    },
     convert(val) {
       // Convert timestamp to milliseconds
       let date = new Date(val * 1000);
@@ -63,6 +89,17 @@ export default {
               .substr(-2)
       }`;
       return convdataTime;
+    },
+   
+    proceed(){
+      this.dialog = false;
+      console.log("proceed");
+      this.$router.replace("/login");
+    },
+    dissmiss(){
+      this.dialog = false;
+      this.$store.commit("setSelectFlight", null);
+     console.log("dissmiss");
     },
     convertDay(val) {
       // Convert timestamp to milliseconds
@@ -90,8 +127,14 @@ export default {
 
       let convdataTime = `${day}-${month}`;
       return convdataTime;
+    },
+
+  },
+  computed: {
+    user(){
+      return this.$store.getters.getUser;
     }
-  }
+  },
 };
 </script>
 

@@ -60,10 +60,10 @@ export default {
         .catch(function(error) {
           // An error happened.
         });
-      this.$router.push("/");
+      this.$router.push("/login");  //this will be changed
     },
     goLogin(){
-      this.$router.push("/");
+      this.$router.push("/login"); //this will be changed
     }
   }
 };

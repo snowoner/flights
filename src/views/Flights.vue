@@ -26,6 +26,9 @@
                 <v-spacer></v-spacer>
                 <p class="headline text-xs-center mb-0">Flights</p>
                 <v-spacer></v-spacer>
+                <router-link to="/profile" class="none">
+                <v-icon left large >account_circle</v-icon>
+                </router-link>
               </v-card-title>
               <!-- Inputs -->
               <v-container fluid>
@@ -89,14 +92,12 @@
                       :item-text="citiAndAirport"
                       item-value="iata"
                       label="From"
-                      
                       clearable
                       prepend-icon="flight_takeoff"
                       return-object
                       class="caption"
                     ></v-autocomplete>
                   </v-flex>
-                  
                 </v-layout>
                 <v-layout
                   row
@@ -113,14 +114,12 @@
                       :item-text="citiAndAirport"
                       item-value="iata"
                       label="To"
-                      
                       clearable
                       prepend-icon="flight_land"
                       return-object
                       class="caption"
                     ></v-autocomplete>
                   </v-flex>
-              
                 </v-layout>
                 <v-layout row class="text-center mr-3" align-items-center justify-content-center>
                   <v-flex xs6 md6>
@@ -219,7 +218,12 @@
                   </v-flex>
                 </v-layout>
                 <v-flex>
-                  <Flight v-for="(flight, index) in results" :key="flight.id" :flight="flight" :oneWay="oneWay"></Flight>
+                  <Flight
+                    v-for="(flight, index) in results"
+                    :key="flight.id"
+                    :flight="flight"
+                    :oneWay="oneWay"
+                  ></Flight>
                   <v-flex v-if="numResults==0 && !loading">
                     <v-card>
                       <v-card-text>
@@ -267,6 +271,9 @@ export default {
         { name: "Legacy carriers", value: "lc" }
       ],
       oneWay: false,
+
+  
+
       adults: 1,
       children: 0,
       chosenClass: "lcc",
@@ -281,7 +288,7 @@ export default {
       first_search: null
     };
   },
-  components:{
+  components: {
     Flight
   },
   methods: {
@@ -392,7 +399,9 @@ export default {
     results() {
       return this.$store.getters.getFlights;
     },
-
+    selectFlight() {
+      return this.$store.getters.getSelectFlight;
+    },
     departDate() {
       return this.formatDate(this.date);
     },
@@ -440,6 +449,9 @@ export default {
 }
 .container.grid-list-md.text-xs-center {
   background-color: #b2b2f1;
+}
+.none{
+  text-decoration: none;
 }
 .w300 {
   width: 300px;

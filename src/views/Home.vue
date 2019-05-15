@@ -83,8 +83,8 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <v-btn @click="logout">Logout</v-btn>
-        <strong>LandAway By Oscar Urgelles Marsal</strong>
+        <!-- <v-btn @click="logout">Logout</v-btn> -->
+        <strong>LandAway made with Love &lt;3 </strong>
       </v-flex>
     </v-layout>
   </v-container>
@@ -120,11 +120,11 @@ export default {
         this.$router.push(`/flights/${this.flight.iata}`);
       }
     },
-    logout() {
-      firebase.auth().signOut().then(()=>{
-        this.$router.replace("login");
-      })
-    }
+    // logout() {
+    //   firebase.auth().signOut().then(()=>{
+    //     this.$router.replace("login");
+    //   })
+    // }
    
     // displayOffers(){
     //   this.displayoffers=!this.displayoffers;
