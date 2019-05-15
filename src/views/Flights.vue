@@ -223,7 +223,7 @@
                   <v-flex v-if="numResults==0 && !loading">
                     <v-card>
                       <v-card-text>
-                        <h3>Sorry no flights abiable whit that criteria</h3>
+                        <h3>Sorry no flights available with that criteria</h3>
                       </v-card-text>
                     </v-card>
                   </v-flex>

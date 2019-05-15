@@ -14,7 +14,7 @@ export default new Vuex.Store({
     flights: [],
     loading: false,
     numResults: null
-    
+
     // offer: [],
     // offers: [],
     // urls: [

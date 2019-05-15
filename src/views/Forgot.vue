@@ -13,10 +13,19 @@
               <p
                 class="separated"
               >Enter your email and we'll send you a link to reset your password.</p>
-              <v-text-field prepend-icon="email" name="email" label="Email" type="email"></v-text-field>
+              <v-text-field
+                prepend-icon="email"
+                v-model="email"
+                clearable
+                name="email"
+                label="Email"
+                type="email"
+              ></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="goLogin">Go Back</v-btn>
             <v-spacer></v-spacer>
             <v-btn color="primary" @click="validate">Send</v-btn>
             <v-spacer></v-spacer>
@@ -32,13 +41,28 @@
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   data() {
-    return {};
+    return {
+      email: ""
+    };
   },
   methods: {
     validate() {
-      console.log("See your email and reset your password");
+      var auth = firebase.auth();
+      auth
+        .sendPasswordResetEmail(this.email)
+        .then(function() {
+          // Email sent.
+        })
+        .catch(function(error) {
+          // An error happened.
+        });
+      this.$router.push("/");
+    },
+    goLogin(){
       this.$router.push("/");
     }
   }
@@ -48,7 +72,7 @@ export default {
 
 <style>
 .container.grid-list-md.text-xs-center {
-    background-color: #b2b2f1;
+  background-color: #b2b2f1;
 }
 .separated {
   margin-top: 50px;

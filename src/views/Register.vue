@@ -16,6 +16,7 @@
                 prepend-icon="email"
                 name="email"
                 v-model="email"
+                clearable
                 label="Email"
                 type="email"
               ></v-text-field>
@@ -23,12 +24,15 @@
                 prepend-icon="lock"
                 name="password"
                 v-model="password"
+                clearable
                 label="Password"
                 type="password"
               ></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
+              <v-spacer></v-spacer>
+            <v-btn color="primary" @click="goLogin">Go Back</v-btn>
             <v-spacer></v-spacer>
             <v-btn color="primary" @click="validate">Send</v-btn>
             <v-spacer></v-spacer>
@@ -63,6 +67,9 @@ export default {
           console.log(error);
     });
       
+    },
+      goLogin(){
+      this.$router.push("/");
     }
   },
 }
