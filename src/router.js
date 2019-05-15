@@ -7,12 +7,13 @@ import Myflights from "./views/Myflights.vue";
 import Forgot from "./views/Forgot.vue";
 import Register from "./views/Register.vue";
 import Profile from "./views/Profile.vue";
-import firebase from 'firebase';
+import firebase from "firebase";
+import VeeValidate from "vee-validate";
 
-
+Vue.use(VeeValidate);
 Vue.use(Router);
 
-const router= new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [

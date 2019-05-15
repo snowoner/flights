@@ -11,27 +11,33 @@
             <v-form>
               <v-text-field
                 prepend-icon="person"
-                name="email"
-                v-model="email"
-                :rules="emailRules"
-                placeholder="Email"
                 clearable
-                label="Email"
-                type="text"
+                v-model="email"
+                name="Email"
+                v-validate.continues="'email'"
+                :error-messages="errors.collect('email')"
+                label="E-mail"
+                data-vv-name="email"
+                required
               ></v-text-field>
               <v-text-field
                 :append-icon="show2 ? 'visibility' : 'visibility_off'"
-                :rules="[rules.required, rules.min]"
                 prepend-icon="lock"
                 :type="show2 ? 'text' : 'password'"
                 name="password"
                 v-model="password"
                 label="Password"
-                hint="At least 8 characters"
+                hint="At least 6 characters"
+                v-validate.continues="'min:6'"
+                data-vv-as="Password"
+                :error-messages="errors.collect('password')"
                 clearable
                 @click:append="show2 = !show2"
               ></v-text-field>
             </v-form>
+            <v-card v-if="errores!=null">
+              <p class="red--text">{{errores}}</p>
+            </v-card>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -73,29 +79,42 @@ export default {
     return {
       email: "",
       password: "",
-      rules: {
-        required: value => !!value || "Required.",
-        min: v => v.length >= 6 || "Min 6 characters"
+      dictionary: {
+        attributes: {
+          email: "E-mail Address",
+          password: "Password"
+          // custom attributes
+        }
       },
-      emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+/.test(v) || "E-mail must be valid"
-      ],
-      show2: false
+      show2: false,
+      errores: null
     };
   },
   methods: {
     validate() {
-      firebase
+      this.errores = null;
+      this.$validator
+        .validateAll()
+        .then(result => {
+          if (!result) {
+            
+            return;
+          }
+             firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
           this.$router.push("home");
         })
-        .catch(err => {
-          alert("Prueva hasta que te canses");
+        .catch(error => {
+          console.log(error);
+          this.errores=error.message;
         });
-      // console.log("Te has validado ok");
+      console.log("Te has validado ok");
+        })
+        .catch(() => {});
+
+   
     },
     googleLogin() {
       var provider = new firebase.auth.GoogleAuthProvider();
@@ -106,7 +125,7 @@ export default {
           this.$router.push("home");
         })
         .catch(error => {
-          console.log(error);
+          this.errores = error.message;
         });
     }
   }
