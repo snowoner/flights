@@ -26,6 +26,9 @@
                 <v-spacer></v-spacer>
                 <p class="headline text-xs-center mb-0">Home</p>
                 <v-spacer></v-spacer>
+                   <router-link to="/profile" class="none">
+                <v-icon left large >account_circle</v-icon>
+                </router-link>
               </v-card-title>
               <v-flex xs12 grid-list-md text-xs-center>
                 <v-layout row class="text-center">
@@ -164,6 +167,9 @@ export default {
       }
       return citiesReturn;
     },
+    user(){
+      return this.$store.getUser;
+    },
     destinations(){
       return this.$store.getters.getLocations;
     }
@@ -184,7 +190,9 @@ export default {
 .container.grid-list-md.text-xs-center {
   background-color: #b2b2f1;
 }
-
+.none{
+  text-decoration: none;
+}
 .text-justify {
   text-align: justify;
 }
