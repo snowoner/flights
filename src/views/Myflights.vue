@@ -30,9 +30,18 @@
                   <v-icon left large>account_circle</v-icon>
                 </router-link>
               </v-card-title>
-              <v-container fluid>
+              <v-container fluid v-if="user!=null">
                 <v-flex>
-                  <Flight :flight="selectFlight" :oneWay="selectFlight.hasOwnProperty('return_duration')?false:true"></Flight>
+                  <Flight v-for="(flight, index) in selectFlight" :key="index" :flight="flight" :oneWay="flight.hasOwnProperty('return_duration')?false:true"></Flight>
+                </v-flex>
+              </v-container>
+              <v-container v-else>
+                <v-flex>
+                  <v-card>
+                    <v-card-text>
+                      You don't have any flight yet!
+                    </v-card-text>
+                  </v-card>
                 </v-flex>
               </v-container>
             </v-card>
@@ -51,7 +60,7 @@ export default {
     return {
       menu: [
         { title: "Home", to: "/home" },
-        { title: "Flights", to: "/flights" },
+        { title: "Flights", to: "/flights/ " },
         { title: "Profile", to: "/profile" }
       ]
     };

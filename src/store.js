@@ -14,7 +14,7 @@ export default new Vuex.Store({
     flights: [],
     loading: false,
     numResults: null,
-    selectFlight: null,
+    selectFlight: [],
     user: null
 
     // offer: [],
@@ -53,7 +53,10 @@ export default new Vuex.Store({
       state.numResults = data;
     },
     setSelectFlight(state, data) {
-      state.selectFlight = data;
+      state.selectFlight.push(data);
+    },
+    delSelectFlight(state, data) {
+      state.selectFlight.filter(e => e != data);
     }
     // setAirports(state, data) {
     //   state.airports = data;

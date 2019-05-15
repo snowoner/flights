@@ -35,14 +35,14 @@
       <v-card-text v-if="!this.oneWay" class="ml-1 mr-1 p0">Return:</v-card-text>
       <v-card-text v-if="!this.oneWay" class="ml-1 p0">{{flight.return_duration}}</v-card-text>
     </v-flex>
-    <v-flex v-if="user">
-      <v-btn @click="book(flight.deep_link)">{{flight.price}}€</v-btn>
+    <v-flex v-if="user!=null">
+      <v-btn @click="book">{{flight.price}}€</v-btn>
     </v-flex>
-    <v-flex v-if="!user">
+    <v-flex v-if="user==null">
     <v-layout row justify-center>
       <v-dialog v-model="dialog" persistent max-width="290">
         <template v-slot:activator="{ on }">
-         <v-btn v-on="on" @click="book(flight.deep_link)">{{flight.price}}€</v-btn>
+         <v-btn v-on="on">{{flight.price}}€</v-btn>
         </template>
         <v-card>
           <v-card-title class="headline">Not registered yet?</v-card-title>
@@ -70,8 +70,15 @@ export default {
     };
   },
   methods: {
-    book(deep_link) {
-      this.$store.commit("setSelectFlight", this.flight);
+    book() {
+      if(this.$router.history.current.name=="myflights") {
+        window.open(this.flight.deep_link);
+      }
+      else {
+        this.$store.commit("setSelectFlight", this.flight);
+       this.$router.replace("/myflights");
+      }
+      
       // window.open(deep_link);
     },
     convert(val) {
@@ -94,6 +101,7 @@ export default {
     proceed(){
       this.dialog = false;
       console.log("proceed");
+      this.$store.commit("setSelectFlight", this.flight);
       this.$router.replace("/login");
     },
     dissmiss(){
