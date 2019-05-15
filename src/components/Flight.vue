@@ -1,6 +1,7 @@
 <template>
   <v-card class="centerCol">
     <v-flex v-for="(route, index) in flight.route" :key="route.id" class="centerCol" xs12>
+    
       <v-flex class="center" xs12>
         <span class="mr-1">{{convertDay(route.dTimeUTC)}}</span>
 
@@ -28,6 +29,7 @@
           :src="`https://images.kiwi.com/airlines/128/${route.airline}.png`"
         ></v-img>
       </v-flex>
+      
     </v-flex>
     <v-flex xs12 class="center w300">
       <v-card-text class="ml-1 p0">Fly:</v-card-text>
@@ -36,6 +38,7 @@
       <v-card-text v-if="!this.oneWay" class="ml-1 p0">{{flight.return_duration}}</v-card-text>
     </v-flex>
     <v-flex v-if="user!=null">
+      <v-btn v-if="this.$router.history.current.name=='myflights'" @click="del" >Cancel</v-btn>
       <v-btn @click="book">{{flight.price}}€</v-btn>
     </v-flex>
     <v-flex v-if="user==null">
@@ -59,10 +62,12 @@
     </v-layout>
     </v-flex>
   </v-card>
+   
 </template>
 
 <script>
 export default {
+  
   props: ["flight", "oneWay"],
   data() {
     return {
@@ -70,6 +75,12 @@ export default {
     };
   },
   methods: {
+    del(){
+      console.log("del");
+      this.$store.commit("delSelectFlight", this.flight);
+      this.$router.push("/myflights");
+      
+    },
     book() {
       if(this.$router.history.current.name=="myflights") {
         window.open(this.flight.deep_link);

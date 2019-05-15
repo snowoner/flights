@@ -31,15 +31,42 @@
                 </router-link>
               </v-card-title>
               <v-container fluid v-if="user!=null">
-                <v-flex>
-                  <Flight v-for="(flight, index) in selectFlight" :key="index" :flight="flight" :oneWay="flight.hasOwnProperty('return_duration')?false:true"></Flight>
+                <v-layout v-if="selectFlight.length>0" row wrap>
+                  <v-flex xs12>
+                    <v-btn>click me!</v-btn>
+                  </v-flex>
+                  <v-flex xs12>
+                    <Flight
+                      v-for="(flight, index) in selectFlight"
+                      :key="index"
+                      :flight="flight"
+                      :oneWay="flight.hasOwnProperty('return_duration')?false:true"
+                    ></Flight>
+                  </v-flex>
+                </v-layout>
+                <v-flex v-else>
+                  <v-card>
+                    <v-card-text>
+                      You do not have any flights yet!
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card-text>
+                  </v-card>
                 </v-flex>
               </v-container>
-              <v-container v-else>
+              <v-container v-if="user==null">
                 <v-flex>
                   <v-card>
                     <v-card-text>
-                      You don't have any flight yet!
+                      Only registered users can see their flights
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn to="/login">Login</v-btn>
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
                     </v-card-text>
                   </v-card>
                 </v-flex>

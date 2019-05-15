@@ -56,7 +56,11 @@ export default new Vuex.Store({
       state.selectFlight.push(data);
     },
     delSelectFlight(state, data) {
-      state.selectFlight.filter(e => e != data);
+      for (var i = state.selectFlight.length - 1; i >= 0; i--) {
+        if (state.selectFlight[i] == data) {
+          state.selectFlight.splice(i, 1);
+        }
+      }
     }
     // setAirports(state, data) {
     //   state.airports = data;
