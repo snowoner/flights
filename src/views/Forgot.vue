@@ -14,14 +14,20 @@
                 class="separated"
               >Enter your email and we'll send you a link to reset your password.</p>
               <v-text-field
-                prepend-icon="email"
-                v-model="email"
+                prepend-icon="person"
                 clearable
-                name="email"
-                label="Email"
-                type="email"
+                v-model="email"
+                name="Email"
+                v-validate.continues="'email'"
+                :error-messages="errors.collect('email')"
+                label="E-mail"
+                data-vv-name="email"
+                required
               ></v-text-field>
             </v-form>
+            <v-card v-if="errores!=null">
+              <p class="red--text">{{errores}}</p>
+            </v-card>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -46,23 +52,38 @@ import firebase from "firebase";
 export default {
   data() {
     return {
-      email: ""
+      email: "",
+      dictionary: {
+        attributes: {
+          email: "E-mail Address"
+          // custom attributes
+        }
+      },
+      errores: null
     };
   },
   methods: {
     validate() {
-      var auth = firebase.auth();
-      auth
-        .sendPasswordResetEmail(this.email)
-        .then(function() {
-          // Email sent.
+      this.errores = null;
+      this.$validator
+        .validateAll()
+        .then(result => {
+          if (!result) {
+            return;
+          }
+          var auth = firebase.auth();
+          auth
+            .sendPasswordResetEmail(this.email)
+            .then(function() {
+              // Email sent.
+            })
+            .catch(error => {
+              this.errores = error.message;
+            });
         })
-        .catch(function(error) {
-          // An error happened.
-        });
-      this.$router.push("/login");  //this will be changed
+        .catch((error) => {console.log(error)});
     },
-    goLogin(){
+    goLogin() {
       this.$router.push("/login"); //this will be changed
     }
   }
@@ -79,5 +100,8 @@ export default {
 }
 .height1 {
   height: 1px;
+}
+.separated100 {
+  margin-top: 100px;
 }
 </style>

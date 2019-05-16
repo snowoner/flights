@@ -27,7 +27,5 @@ firebase.auth().onAuthStateChanged(() => {
       store,
       render: h => h(App)
     }).$mount("#app");
-  } else {
-    console.log("app");
   }
 });

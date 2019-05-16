@@ -240,7 +240,7 @@
       </v-flex>
       <v-flex xs12></v-flex>
       <v-flex xs12 class="separated100">
-        <strong>LandAway By Oscar Urgelles Marsal</strong>
+        <strong>LandAway made with Love &lt;3 </strong>
       </v-flex>
     </v-layout>
   </v-container>
@@ -475,10 +475,13 @@ input[type="text"] {
   max-width: 185px;
 }
 a.v-list__tile.v-list__tile--link.theme--light {
-  max-width: 400px;
-  width: 231px;
+    max-width: 300px;
+    width: fit-content;
 }
 
+.separated100 {
+  margin-top: 100px;
+}
 button.v-btn.theme--light {
   max-width: 40px;
   white-space: wrap;

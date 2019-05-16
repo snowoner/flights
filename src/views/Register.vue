@@ -112,4 +112,7 @@ export default {
 .container.grid-list-md.text-xs-center {
   background-color: #b2b2f1;
 }
+.separated100 {
+  margin-top: 100px;
+}
 </style>

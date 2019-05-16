@@ -65,7 +65,7 @@
         </v-card>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <strong>LandAway By Oscar Urgelles Marsal v 1.2</strong>
+        <strong>LandAway By Oscar Urgelles Marsal v 1.5</strong>
       </v-flex>
     </v-layout>
   </v-container>
@@ -111,7 +111,7 @@ export default {
           this.errores=error.message;
         });
         })
-        .catch(() => {});
+        .catch(error => {this.errores=error.message});
 
    
     },
@@ -122,6 +122,7 @@ export default {
         .signInWithPopup(provider)
         .then(user => {
           this.$store.commit("setUser", user);
+          console.log(user);
           this.$router.replace("myflights");  //this will be changed
         })
         .catch(error => {

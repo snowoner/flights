@@ -20,5 +20,7 @@ export default {
 </script>
 
 <style>
-
+.container.grid-list-md.text-xs-center {
+    padding: 4px;
+}
 </style>

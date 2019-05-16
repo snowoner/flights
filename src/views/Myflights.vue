@@ -24,7 +24,7 @@
                   </v-list>
                 </v-menu>
                 <v-spacer></v-spacer>
-                <p class="headline text-xs-center mb-0">Flights</p>
+                <p class="headline text-xs-center mb-0">My Flights</p>
                 <v-spacer></v-spacer>
                 <router-link to="/profile" class="none">
                   <v-icon left large>account_circle</v-icon>
@@ -75,6 +75,10 @@
           </v-flex>
         </v-layout>
       </v-flex>
+       <v-flex xs12 class="separated100">
+        <!-- <v-btn @click="logout">Logout</v-btn> -->
+        <strong>LandAway made with Love &lt;3 </strong>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -108,4 +112,7 @@ export default {
 </script>
 
 <style>
+.separated100 {
+  margin-top: 100px;
+}
 </style>
