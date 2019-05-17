@@ -50,7 +50,7 @@
               </v-snackbar>
               <v-container fluid>
                 <v-layout row class="text-center" align-items-center justify-content-center>
-                  <v-flex xs6>
+                  <v-flex xs12>
                     <v-card flat>
                       <v-card-title primary-title>
                         <div>
@@ -68,7 +68,8 @@
                     <div>
                       <div class="end">
                         <v-btn v-if="user!=null" small fab @click="edit">
-                          <v-icon medium>settings</v-icon>
+                          <v-icon v-if="editing" medium color="green">settings</v-icon>
+                          <v-icon v-if="!editing" medium>settings</v-icon>
                         </v-btn>
                         <v-btn small fab @click="user!=null?logout():login()">
                           <v-icon v-if="user" medium color="red">power_settings_new</v-icon>
@@ -211,7 +212,7 @@ export default {
           if (!result) {
             return;
           }
-          console.log("passok");
+          console.log("auha");
           var userA = firebase.auth().currentUser;
           userA
             .updatePassword(this.password2)
@@ -220,13 +221,11 @@ export default {
               this.changePassOK = true;
             })
             .catch(error => {
-              console.log("algo falla");
               console.log(error);
               this.errores = error.message;
             });
         })
         .catch(error => {
-          console.log("grave es");
           console.log(error);
           this.errores = error.message;
         });
@@ -260,11 +259,11 @@ export default {
             this.alert = true;
           })
           .catch(error => {
-            console.log("Algo pasa");
+            
             console.log(error);
           });
       } else {
-        console.log("not logged sorry");
+        
       }
     }
   },
