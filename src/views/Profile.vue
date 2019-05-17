@@ -28,13 +28,16 @@
                 <v-spacer></v-spacer>
                 <v-icon left large>account_circle</v-icon>
               </v-card-title>
-              <v-container v-if="alert">
-                <v-alert
-                  :value="alert"
-                  type="success"
-                  transition="scale-transition"
-                >Logout successfully</v-alert>
-              </v-container>
+              <v-snackbar
+                v-model="snackbar"
+                :color="color"
+                :multi-line="mode === 'multi-line'"
+                :timeout="timeout"
+                :vertical="mode === 'vertical'"
+              >
+                {{ text }}
+                <v-btn dark flat @click="snackbar = false">Close</v-btn>
+              </v-snackbar>
               <v-container fluid>
                 <v-layout row class="text-center" align-items-center justify-content-center>
                   <v-flex xs6>
@@ -55,14 +58,13 @@
                     <div>
                       <div class="end">
                         <v-btn small fab @click="edit">
-                          <v-icon>build</v-icon>
+                          <v-icon medium>settings</v-icon>
                         </v-btn>
                         <v-btn small fab @click="user!=null?logout():login()">
-                          <v-icon v-if="user" medium>highlight_off</v-icon>
-                          <v-icon v-if="!user" medium>power_settings_new</v-icon>
+                          <v-icon v-if="user" medium color="red">power_settings_new</v-icon>
+                          <v-icon v-if="!user" medium color="green">power_settings_new</v-icon>
                         </v-btn>
                       </div>
-
                       <v-card flat class="center">
                         <v-img :src="require('../../public/bcn.jpg')"></v-img>
                       </v-card>
@@ -127,17 +129,23 @@ export default {
       ],
       editing: false,
       alert: false,
+      snackbar: false,
+      color: "success",
+      mode: "multi-line",
+      timeout: 3000,
+      text: "Logout successfully"
     };
   },
   methods: {
     edit() {
       this.editing = !this.editing;
     },
-    login(){
+    login() {
       console.log("i do shit");
-     this.$router.replace("/login");
+      this.$router.replace("/login");
     },
     logout() {
+      this.snackbar = true;
       if (this.user) {
         firebase
           .auth()
@@ -186,6 +194,10 @@ export default {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+}
+.v-alert.rounded.success {
+  border-radius: 10px;
+  height: 20px;
 }
 .hiperHeight {
   height: 80px;
