@@ -30,7 +30,7 @@
                   <v-icon left large>account_circle</v-icon>
                 </router-link>
               </v-card-title>
-              <v-container fluid v-if="user!=null">
+              <v-container fluid v-if="user!=null && selectFlight">
                 <v-layout v-if="selectFlight.length>0" row wrap>
                   <v-flex xs12>
                     <v-btn>click me!</v-btn>
@@ -91,8 +91,7 @@ export default {
     return {
       menu: [
         { title: "Home", to: "/home" },
-        { title: "Flights", to: "/flights/ " },
-        { title: "Profile", to: "/profile" }
+        { title: "Flights", to: "/flights/ " }
       ]
     };
   },

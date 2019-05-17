@@ -50,7 +50,8 @@ const router = new Router({
     {
       path: "/myflights",
       name: "myflights",
-      component: Myflights,
+      component: Myflights
+      //   ,
       // meta: {
       //   requiresAuth: true
       // }

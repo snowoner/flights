@@ -263,8 +263,7 @@ export default {
       // to: {city:this.dest, iata:null, name:this.dest},
       menu: [
         { title: "Home", to: "/home" },
-        { title: "My Flights", to: "/myflights" },
-        { title: "Profile", to: "/profile" }
+        { title: "My Flights", to: "/myflights" }
       ],
       clases: [
         { name: "Low cost", value: "lcc" },
@@ -465,14 +464,14 @@ export default {
 }
 
 .v-list.theme--light {
-  max-width: 170px;
+  max-width: 300px;
 }
 
 .p0 {
   padding: 0px;
 }
 input[type="text"] {
-  max-width: 185px;
+  max-width: 300px;
 }
 a.v-list__tile.v-list__tile--link.theme--light {
     max-width: 300px;

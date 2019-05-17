@@ -86,7 +86,6 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <!-- <v-btn @click="logout">Logout</v-btn> -->
         <strong>LandAway made with Love &lt;3 </strong>
       </v-flex>
     </v-layout>
@@ -101,8 +100,7 @@ export default {
     return {
       menu: [
         { title: "Flights", to: "/flights/ " },
-        { title: "My Flights", to: "/myflights" },
-        { title: "Profile", to: "/profile" }
+        { title: "My Flights", to: "/myflights" }
       ],
       flight: null,
       images: [],
