@@ -38,6 +38,16 @@
                 {{ text }}
                 <v-btn dark flat @click="snackbar = false">Close</v-btn>
               </v-snackbar>
+                 <v-snackbar
+                v-model="changePassOK"
+                :color="color"
+                :multi-line="mode === 'multi-line'"
+                :timeout="timeout"
+                :vertical="mode === 'vertical'"
+              >
+                {{ text2 }}
+                <v-btn dark flat @click="changePassOK = false">Close</v-btn>
+              </v-snackbar>
               <v-container fluid>
                 <v-layout row class="text-center" align-items-center justify-content-center>
                   <v-flex xs6>
@@ -57,7 +67,7 @@
                   <v-flex xs12>
                     <div>
                       <div class="end">
-                        <v-btn small fab @click="edit">
+                        <v-btn v-if="user!=null" small fab @click="edit">
                           <v-icon medium>settings</v-icon>
                         </v-btn>
                         <v-btn small fab @click="user!=null?logout():login()">
@@ -79,15 +89,14 @@
                   <v-flex xs2 class="center">
                     <v-icon color="indigo">mail</v-icon>
                   </v-flex>
-                  <v-flex xs3>
+                  <v-flex xs3 class="center">
                     <strong>E-mail</strong>
                   </v-flex>
-                  <v-flex class="center">
-                    <v-btn v-if="editing" small>
-                      Change
-                      <v-icon small right>create</v-icon>
-                    </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-flex v-if="user!=null" xs7 class="center">
+                    <strong>{{userMail}}</strong>
                   </v-flex>
+                  <v-spacer></v-spacer>
                 </v-layout>
                 <v-divider inset></v-divider>
                 <v-layout row class="text-center big" align-items-center justify-content-center>
@@ -98,11 +107,56 @@
                     <strong>Password</strong>
                   </v-flex>
                   <v-flex class="center">
-                    <v-btn v-if="editing" small>
-                      Reset
-                      <v-icon small right>create</v-icon>
+                    <v-btn v-if="resetPass&&editing" @click="change" small>
+                      Change
+                      <v-icon small right>cached</v-icon>
                     </v-btn>
                   </v-flex>
+                  <v-dialog v-model="editingPass" persistent max-width="290">
+                    <v-card>
+                      <v-card-title class="headline">Change your Password</v-card-title>
+                      <v-text-field
+                        class="mr-2 ml-2"
+                        :append-icon="show ? 'visibility' : 'visibility_off'"
+                        :type="show ? 'text' : 'password'"
+                        name="password"
+                        v-model="password"
+                        label="New Password"
+                        v-validate.continues="'min:6'"
+                        data-vv-as="password"
+                        clearable
+                        ref="password"
+                        @click:append="show = !show"
+                      ></v-text-field>
+                      <span
+                        v-show="errors.has('password')"
+                        class="help red--text caption mr-1 ml-1"
+                      >{{ errors.first('password') }}</span>
+                      <v-text-field
+                        class="mr-2 ml-2"
+                        :append-icon="show ? 'visibility' : 'visibility_off'"
+                        :type="show1 ? 'text' : 'password'"
+                        name="password_confirmation"
+                        v-model="password2"
+                        label="Repeat the Password"
+                        v-validate="'confirmed:password'"
+                        data-vv-as="password"
+                        clearable
+                        @click:append="show1 = !show1"
+                      ></v-text-field>
+                      <span
+                        v-show="errors.has('password_confirmation')"
+                        class="help red--text mr-1 ml-1"
+                      >{{ errors.first('password_confirmation') }}</span>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" flat @click="dissmiss">I will do it later</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="green darken-1" flat @click="validate">Proceed to change</v-btn>
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-layout>
               </v-container>
             </v-card>
@@ -132,16 +186,66 @@ export default {
       snackbar: false,
       color: "success",
       mode: "multi-line",
-      timeout: 3000,
-      text: "Logout successfully"
+      timeout: 6000,
+      text: "Logout successfully",
+      text2: "Password successfully changed",
+      resetPass: false,
+      editingPass: false,
+      errores: null,
+      password: "",
+      password2: "",
+      show: false,
+      show1: false,
+      changePassOK: false
     };
   },
   methods: {
+    dissmiss() {
+      this.editingPass = false;
+    },
+    validate() {
+      this.errores = null;
+      this.$validator
+        .validateAll()
+        .then(result => {
+          if (!result) {
+            return;
+          }
+          console.log("passok");
+          var userA = firebase.auth().currentUser;
+          userA
+            .updatePassword(this.password2)
+            .then(res=>{
+              this.editingPass = false;
+              this.changePassOK = true;
+            })
+            .catch(error => {
+              console.log("algo falla");
+              console.log(error);
+              this.errores = error.message;
+            });
+        })
+        .catch(error => {
+          console.log("grave es");
+          console.log(error);
+          this.errores = error.message;
+        });
+    },
+    change() {
+      this.editingPass = true;
+    },
+    checkUid() {
+      this.user.user.providerData.forEach(element => {
+        if (element.providerId == "password") {
+          this.resetPass = true;
+        }
+      });
+    },
     edit() {
+      this.checkUid();
       this.editing = !this.editing;
     },
     login() {
-      console.log("i do shit");
       this.$router.replace("/login");
     },
     logout() {
@@ -167,6 +271,11 @@ export default {
   computed: {
     user() {
       return this.$store.getters.getUser;
+    },
+    userMail() {
+      if (this.user) {
+        return this.user.user.email;
+      }
     }
   }
 };
