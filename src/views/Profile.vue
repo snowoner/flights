@@ -38,7 +38,7 @@
                 {{ text }}
                 <v-btn dark flat @click="snackbar = false">Close</v-btn>
               </v-snackbar>
-                 <v-snackbar
+              <v-snackbar
                 v-model="changePassOK"
                 :color="color"
                 :multi-line="mode === 'multi-line'"
@@ -54,13 +54,33 @@
                     <v-card flat>
                       <v-card-title primary-title>
                         <div>
-                          <v-btn v-if="editing" small>
+                          <v-btn v-if="editing" @click="editName=!editName" small>
                             Change
                             <v-icon small right>create</v-icon>
                           </v-btn>
                           <h3 class="headline mb-0">Name</h3>
-                          <div>The real name</div>
+                          <div v-if="!editName">{{user!=null?user.user.displayName||"Name not Set":""}}</div>
                         </div>
+                        <form @submit.prevent="validateForm('form-2')" data-vv-scope="form-2">
+                        <v-text-field
+                          v-if="editName"
+                          class="mr-2 ml-2 caption"
+                          v-validate="'min:2|required|alpha_spaces'"
+                          name="alpha_spaces_field"
+                          type="text"
+                          v-model="name"
+                          label="Edit Your Name"
+                          data-vv-as="Name"
+                          clearable
+                        ></v-text-field>
+
+                        <!-- NAME USER NO SE CAMBIA AUN!!! -->
+                        <span
+                          v-show="errors.has('form-2.alpha_spaces_field')"
+                          class="help red--text caption mr-1 ml-1"
+                        >{{ errors.first('form-2.alpha_spaces_field') }}</span>
+                         <v-btn small v-if="editName" @click="updateName">Confirm</v-btn>
+                        </form>
                       </v-card-title>
                     </v-card>
                   </v-flex>
@@ -77,7 +97,8 @@
                         </v-btn>
                       </div>
                       <v-card flat class="center">
-                        <v-img :src="require('../../public/bcn.jpg')"></v-img>
+                        <v-img 
+                        class="maxSize" :src="require('../../public/nouser.png')"></v-img>
                       </v-card>
                       <v-btn v-if="editing" small>
                         UpLoad
@@ -116,6 +137,7 @@
                   <v-dialog v-model="editingPass" persistent max-width="290">
                     <v-card>
                       <v-card-title class="headline">Change your Password</v-card-title>
+                      <form @submit.prevent="validateForm('form-1')" data-vv-scope="form-1">
                       <v-text-field
                         class="mr-2 ml-2"
                         :append-icon="show ? 'visibility' : 'visibility_off'"
@@ -123,16 +145,16 @@
                         name="password"
                         v-model="password"
                         label="New Password"
-                        v-validate.continues="'min:6'"
+                        v-validate="'min:6'"
                         data-vv-as="password"
                         clearable
                         ref="password"
                         @click:append="show = !show"
                       ></v-text-field>
                       <span
-                        v-show="errors.has('password')"
+                        v-show="errors.has('form-1.password')"
                         class="help red--text caption mr-1 ml-1"
-                      >{{ errors.first('password') }}</span>
+                      >{{ errors.first('form-1.password') }}</span>
                       <v-text-field
                         class="mr-2 ml-2"
                         :append-icon="show ? 'visibility' : 'visibility_off'"
@@ -146,16 +168,18 @@
                         @click:append="show1 = !show1"
                       ></v-text-field>
                       <span
-                        v-show="errors.has('password_confirmation')"
+                        v-show="errors.has('form-1.password_confirmation')"
                         class="help red--text mr-1 ml-1"
-                      >{{ errors.first('password_confirmation') }}</span>
+                      >{{ errors.first('form-1.password_confirmation') }}</span>
                       <v-card-actions>
+                        
                         <v-spacer></v-spacer>
                         <v-btn color="green darken-1" flat @click="dissmiss">I will do it later</v-btn>
                         <v-spacer></v-spacer>
                         <v-btn color="green darken-1" flat @click="validate">Proceed to change</v-btn>
                         <v-spacer></v-spacer>
                       </v-card-actions>
+                      </form>
                     </v-card>
                   </v-dialog>
                 </v-layout>
@@ -188,6 +212,8 @@ export default {
       color: "success",
       mode: "multi-line",
       timeout: 6000,
+      editName: false,
+      name: null,
       text: "Logout successfully",
       text2: "Password successfully changed",
       resetPass: false,
@@ -201,6 +227,31 @@ export default {
     };
   },
   methods: {
+    updateName() {
+      this.errores = null;
+      this.$validator
+        .validateAll()
+        .then(result => {
+          if (!result) {
+            return;
+          }
+          var userA = firebase.auth().currentUser;
+          userA
+            .updateProfile({
+              displayName: this.name
+            })
+            .then(() =>{
+              this.editName=false;
+            })
+            .catch(error=> {
+             console.log(error);
+            });
+        })
+        .catch(error => {
+          console.log(error);
+          this.errores = error.message;
+        });
+    },
     dissmiss() {
       this.editingPass = false;
     },
@@ -212,11 +263,11 @@ export default {
           if (!result) {
             return;
           }
-          console.log("auha");
+
           var userA = firebase.auth().currentUser;
           userA
             .updatePassword(this.password2)
-            .then(res=>{
+            .then(res => {
               this.editingPass = false;
               this.changePassOK = true;
             })
@@ -259,11 +310,9 @@ export default {
             this.alert = true;
           })
           .catch(error => {
-            
             console.log(error);
           });
       } else {
-        
       }
     }
   },
@@ -297,6 +346,11 @@ export default {
 }
 .layout.text-center.big.row.align-items-center.justify-content-center {
   height: 60px;
+}
+.maxSize{
+  border: 1px black solid;
+  max-height: 100px;
+  max-width: 100px;
 }
 .end {
   display: flex;
