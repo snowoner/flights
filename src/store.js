@@ -15,7 +15,8 @@ export default new Vuex.Store({
     loading: false,
     numResults: null,
     selectFlight: [],
-    user: null
+    user: null,
+    db:'',
 
     // offer: [],
     // offers: [],

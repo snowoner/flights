@@ -26,7 +26,12 @@
                 <v-spacer></v-spacer>
                 <p class="headline text-xs-center mb-0">Profile</p>
                 <v-spacer></v-spacer>
-                <v-icon left large>account_circle</v-icon>
+                <v-avatar class="mr-3" size="30px" color="grey lighten-4">
+                  <img
+                    :src="user!=null?user.user.photoURL||require('../../public/nouser.png'):require('../../public/nouser.png')"
+                    alt="avatar"
+                  >
+                </v-avatar>
               </v-card-title>
               <v-snackbar
                 v-model="snackbar"
@@ -59,27 +64,27 @@
                             <v-icon small right>create</v-icon>
                           </v-btn>
                           <h3 class="headline mb-0">Name</h3>
-                          <div v-if="!editName">{{user!=null?user.user.displayName||"Name not Set":""}}</div>
+                          <div
+                            v-if="!editName"
+                          >{{user!=null?user.user.displayName||"Name not Set":""}}</div>
                         </div>
                         <form @submit.prevent="validateForm('form-2')" data-vv-scope="form-2">
-                        <v-text-field
-                          v-if="editName"
-                          class="mr-2 ml-2 caption"
-                          v-validate="'min:2|required|alpha_spaces'"
-                          name="alpha_spaces_field"
-                          type="text"
-                          v-model="name"
-                          label="Edit Your Name"
-                          data-vv-as="Name"
-                          clearable
-                        ></v-text-field>
-
-                        <!-- NAME USER NO SE CAMBIA AUN!!! -->
-                        <span
-                          v-show="errors.has('form-2.alpha_spaces_field')"
-                          class="help red--text caption mr-1 ml-1"
-                        >{{ errors.first('form-2.alpha_spaces_field') }}</span>
-                         <v-btn small v-if="editName" @click="updateName">Confirm</v-btn>
+                          <v-text-field
+                            v-if="editName"
+                            class="mr-2 ml-2 caption"
+                            v-validate="'min:2|required|alpha_spaces'"
+                            name="alpha_spaces_field"
+                            type="text"
+                            v-model="name"
+                            label="Edit Your Name"
+                            data-vv-as="Name"
+                            clearable
+                          ></v-text-field>
+                          <span
+                            v-show="errors.has('form-2.alpha_spaces_field')"
+                            class="help red--text caption mr-1 ml-1"
+                          >{{ errors.first('form-2.alpha_spaces_field') }}</span>
+                          <v-btn small v-if="editName" @click="updateName">Confirm</v-btn>
                         </form>
                       </v-card-title>
                     </v-card>
@@ -97,16 +102,51 @@
                         </v-btn>
                       </div>
                       <v-card flat class="center">
-                        <v-img 
-                        class="maxSize" :src="require('../../public/nouser.png')"></v-img>
+                        <v-img
+                          v-if="user==null"
+                          class="maxSize"
+                          :src="require('../../public/nouser.png')"
+                        ></v-img>
+                        <v-img
+                          v-else
+                          class="maxSize"
+                          :src="this.user.user.photoURL||require('../../public/nouser.png')"
+                        ></v-img>
                       </v-card>
-                      <v-btn v-if="editing" small>
+                      <v-btn v-if="editing" @click="editPhoto=!editPhoto" small>
                         UpLoad
                         <v-icon small right>attach_file</v-icon>
                       </v-btn>
                     </div>
                   </v-flex>
                 </v-layout>
+                <v-layout
+                  v-if="editPhoto&&editing"
+                  row
+                  class="text-center big"
+                  align-items-center
+                  justify-content-center
+                >
+                  <v-flex xs6>
+                    <v-text-field
+                      label="Select Image"
+                      @click="pickFile"
+                      v-model="imageName"
+                      prepend-icon="attach_file"
+                    ></v-text-field>
+                    <input
+                      type="file"
+                      style="display: none"
+                      ref="image"
+                      accept="image/*"
+                      @change="onFilePicked"
+                    >
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-btn @click="upImg">Confirm</v-btn>
+                  </v-flex>
+                </v-layout>
+
                 <v-layout row class="text-center big" align-items-center justify-content-center>
                   <v-flex xs2 class="center">
                     <v-icon color="indigo">mail</v-icon>
@@ -138,47 +178,46 @@
                     <v-card>
                       <v-card-title class="headline">Change your Password</v-card-title>
                       <form @submit.prevent="validateForm('form-1')" data-vv-scope="form-1">
-                      <v-text-field
-                        class="mr-2 ml-2"
-                        :append-icon="show ? 'visibility' : 'visibility_off'"
-                        :type="show ? 'text' : 'password'"
-                        name="password"
-                        v-model="password"
-                        label="New Password"
-                        v-validate="'min:6'"
-                        data-vv-as="password"
-                        clearable
-                        ref="password"
-                        @click:append="show = !show"
-                      ></v-text-field>
-                      <span
-                        v-show="errors.has('form-1.password')"
-                        class="help red--text caption mr-1 ml-1"
-                      >{{ errors.first('form-1.password') }}</span>
-                      <v-text-field
-                        class="mr-2 ml-2"
-                        :append-icon="show ? 'visibility' : 'visibility_off'"
-                        :type="show1 ? 'text' : 'password'"
-                        name="password_confirmation"
-                        v-model="password2"
-                        label="Repeat the Password"
-                        v-validate="'confirmed:password'"
-                        data-vv-as="password"
-                        clearable
-                        @click:append="show1 = !show1"
-                      ></v-text-field>
-                      <span
-                        v-show="errors.has('form-1.password_confirmation')"
-                        class="help red--text mr-1 ml-1"
-                      >{{ errors.first('form-1.password_confirmation') }}</span>
-                      <v-card-actions>
-                        
-                        <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" flat @click="dissmiss">I will do it later</v-btn>
-                        <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" flat @click="validate">Proceed to change</v-btn>
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
+                        <v-text-field
+                          class="mr-2 ml-2"
+                          :append-icon="show ? 'visibility' : 'visibility_off'"
+                          :type="show ? 'text' : 'password'"
+                          name="password"
+                          v-model="password"
+                          label="New Password"
+                          v-validate="'min:6'"
+                          data-vv-as="password"
+                          clearable
+                          ref="password"
+                          @click:append="show = !show"
+                        ></v-text-field>
+                        <span
+                          v-show="errors.has('form-1.password')"
+                          class="help red--text caption mr-1 ml-1"
+                        >{{ errors.first('form-1.password') }}</span>
+                        <v-text-field
+                          class="mr-2 ml-2"
+                          :append-icon="show ? 'visibility' : 'visibility_off'"
+                          :type="show1 ? 'text' : 'password'"
+                          name="password_confirmation"
+                          v-model="password2"
+                          label="Repeat the Password"
+                          v-validate="'confirmed:password'"
+                          data-vv-as="password"
+                          clearable
+                          @click:append="show1 = !show1"
+                        ></v-text-field>
+                        <span
+                          v-show="errors.has('form-1.password_confirmation')"
+                          class="help red--text mr-1 ml-1"
+                        >{{ errors.first('form-1.password_confirmation') }}</span>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="green darken-1" flat @click="dissmiss">I will do it later</v-btn>
+                          <v-spacer></v-spacer>
+                          <v-btn color="green darken-1" flat @click="validate">Proceed to change</v-btn>
+                          <v-spacer></v-spacer>
+                        </v-card-actions>
                       </form>
                     </v-card>
                   </v-dialog>
@@ -213,6 +252,7 @@ export default {
       mode: "multi-line",
       timeout: 6000,
       editName: false,
+      editPhoto: false,
       name: null,
       text: "Logout successfully",
       text2: "Password successfully changed",
@@ -223,10 +263,54 @@ export default {
       password2: "",
       show: false,
       show1: false,
-      changePassOK: false
+      changePassOK: false,
+      upLoadImg: null,
+      imageName: "",
+      imageUrl: "",
+      imageFile: "",
+      db: ""
     };
   },
   methods: {
+    upImg() {
+      this.editPhoto = false;
+
+      // var storage = firebase.storage();
+      // var storageRef = storage.ref();
+      // var imagesRef = storageRef.child("images");
+      // var userImg = imagesRef.child(this.user.user.uid);
+      // var profileImg = userImg.child("profileImg");
+      // var uploadImage = profileImg.put(this.imageFile);
+      // var usageImage = storage.ref(profileImg.fullPath);
+
+      // // Get the download URL
+      // usageImage
+      //   .getDownloadURL()
+      //   .then(url => {
+      //     var userA = firebase.auth().currentUser;
+      //     firebase
+      //       .database()
+      //       .ref("users/" + userA.uid)
+      //       .update(
+      //         {
+      //           profile_picture: url
+      //         },
+      //         error => {
+      //           if (error) {
+      //             console.log(error);
+      //           } else {
+      //             // Data saved successfully!
+      //           }
+      //         }
+      //       );
+      //       this.editPhoto=false;
+      //       this.$store.commit("setUser", userA);
+      //     console.log(url);
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   });
+    },
     updateName() {
       this.errores = null;
       this.$validator
@@ -240,11 +324,11 @@ export default {
             .updateProfile({
               displayName: this.name
             })
-            .then(() =>{
-              this.editName=false;
+            .then(() => {
+              this.editName = false;
             })
-            .catch(error=> {
-             console.log(error);
+            .catch(error => {
+              console.log(error);
             });
         })
         .catch(error => {
@@ -252,6 +336,7 @@ export default {
           this.errores = error.message;
         });
     },
+
     dissmiss() {
       this.editingPass = false;
     },
@@ -281,6 +366,84 @@ export default {
           this.errores = error.message;
         });
     },
+    pickFile() {
+      this.$refs.image.click();
+    },
+
+    onFilePicked(e) {
+      const files = e.target.files;
+      if (files[0] !== undefined) {
+        this.imageName = files[0].name;
+
+        if (this.imageName.lastIndexOf(".") <= 0) {
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.imageUrl = fr.result;
+          this.imageFile = files[0]; // this is an image file that can be sent to server...
+          var storage = firebase.storage();
+          var storageRef = storage.ref();
+          var imagesRef = storageRef.child("images");
+          var userImg = imagesRef.child(this.user.user.uid);
+          var profileImg = userImg.child("profileImg");
+          var uploadImage = profileImg.put(this.imageFile);
+          var usageImage = storage.ref(profileImg.fullPath);
+
+          // Get the download URL
+          usageImage
+            .getDownloadURL()
+            .then(url => {
+              firebase
+                .database()
+                .ref("users/" + this.user.user.uid)
+                .update(
+                  {
+                    profile_picture: url
+                  },
+                  error => {
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      var userA = firebase.auth().currentUser;
+                      userA
+                        .updateProfile({
+                          photoURL: url
+                        })
+                        .then(() => {})
+                        .catch(error => {
+                          console.log(error);
+                        });
+                    }
+                  }
+                );
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        });
+      } else {
+        this.imageName = "";
+        this.imageFile = "";
+        this.imageUrl = "";
+      }
+    },
+    // updateImg() {
+    //   var userA = firebase.auth().currentUser;
+
+    //   userA
+    //     .updateProfile({
+    //       profile_picture: this.imageFile
+    //     })
+    //     .then(() => {
+    //       this.editPhoto = false;
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    // },
+
     change() {
       this.editingPass = true;
     },
@@ -325,6 +488,9 @@ export default {
         return this.user.user.email;
       }
     }
+  },
+  created() {
+    this.db = firebase.database();
   }
 };
 </script>
@@ -347,7 +513,7 @@ export default {
 .layout.text-center.big.row.align-items-center.justify-content-center {
   height: 60px;
 }
-.maxSize{
+.maxSize {
   border: 1px black solid;
   max-height: 100px;
   max-width: 100px;

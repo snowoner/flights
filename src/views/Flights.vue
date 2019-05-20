@@ -219,7 +219,7 @@
                 </v-layout>
                 <v-flex>
                   <Flight
-                    v-for="(flight, index) in results"
+                    v-for="(flight) in results"
                     :key="flight.id"
                     :flight="flight"
                     :oneWay="oneWay"

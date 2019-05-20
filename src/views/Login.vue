@@ -121,7 +121,7 @@ export default {
         .auth()
         .signInWithPopup(provider)
         .then(user => {
-          this.$store.commit("setUser", user);
+          this.$store.commit("setUser", user); 
           this.$router.replace("myflights");  //this will be changed
         })
         .catch(error => {
