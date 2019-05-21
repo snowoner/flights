@@ -58,7 +58,7 @@
                   <v-flex xs12>
                     <v-card flat>
                       <v-card-title primary-title>
-                        <div>
+                        <div>      
                           <v-btn v-if="editing" @click="editName=!editName" small>
                             Change
                             <v-icon small right>create</v-icon>
@@ -136,6 +136,7 @@
                     ></v-text-field>
                     <input
                       type="file"
+                      id="blur"
                       style="display: none"
                       ref="image"
                       accept="image/*"
@@ -143,10 +144,10 @@
                     >
                   </v-flex>
                   <v-flex xs6>
-                    <v-btn @click="upImg">Confirm</v-btn>
+                    <v-btn  small @click="upImg">Cancel</v-btn>
+                    <v-btn small @click="updateI">Confirm</v-btn>
                   </v-flex>
                 </v-layout>
-
                 <v-layout row class="text-center big" align-items-center justify-content-center>
                   <v-flex xs2 class="center">
                     <v-icon color="indigo">mail</v-icon>
@@ -268,48 +269,12 @@ export default {
       imageName: "",
       imageUrl: "",
       imageFile: "",
-      db: ""
+      fr: '',
     };
   },
   methods: {
     upImg() {
       this.editPhoto = false;
-
-      // var storage = firebase.storage();
-      // var storageRef = storage.ref();
-      // var imagesRef = storageRef.child("images");
-      // var userImg = imagesRef.child(this.user.user.uid);
-      // var profileImg = userImg.child("profileImg");
-      // var uploadImage = profileImg.put(this.imageFile);
-      // var usageImage = storage.ref(profileImg.fullPath);
-
-      // // Get the download URL
-      // usageImage
-      //   .getDownloadURL()
-      //   .then(url => {
-      //     var userA = firebase.auth().currentUser;
-      //     firebase
-      //       .database()
-      //       .ref("users/" + userA.uid)
-      //       .update(
-      //         {
-      //           profile_picture: url
-      //         },
-      //         error => {
-      //           if (error) {
-      //             console.log(error);
-      //           } else {
-      //             // Data saved successfully!
-      //           }
-      //         }
-      //       );
-      //       this.editPhoto=false;
-      //       this.$store.commit("setUser", userA);
-      //     console.log(url);
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //   });
     },
     updateName() {
       this.errores = null;
@@ -348,10 +313,7 @@ export default {
           if (!result) {
             return;
           }
-
-          var userA = firebase.auth().currentUser;
-          userA
-            .updatePassword(this.password2)
+         this.user.user.updatePassword(this.password2)
             .then(res => {
               this.editingPass = false;
               this.changePassOK = true;
@@ -369,20 +331,7 @@ export default {
     pickFile() {
       this.$refs.image.click();
     },
-
-    onFilePicked(e) {
-      const files = e.target.files;
-      if (files[0] !== undefined) {
-        this.imageName = files[0].name;
-
-        if (this.imageName.lastIndexOf(".") <= 0) {
-          return;
-        }
-        const fr = new FileReader();
-        fr.readAsDataURL(files[0]);
-        fr.addEventListener("load", () => {
-          this.imageUrl = fr.result;
-          this.imageFile = files[0]; // this is an image file that can be sent to server...
+    updateI(){
           var storage = firebase.storage();
           var storageRef = storage.ref();
           var imagesRef = storageRef.child("images");
@@ -391,37 +340,39 @@ export default {
           var uploadImage = profileImg.put(this.imageFile);
           var usageImage = storage.ref(profileImg.fullPath);
 
-          // Get the download URL
           usageImage
             .getDownloadURL()
             .then(url => {
-              firebase
-                .database()
-                .ref("users/" + this.user.user.uid)
-                .update(
-                  {
-                    profile_picture: url
-                  },
-                  error => {
-                    if (error) {
-                      console.log(error);
-                    } else {
-                      var userA = firebase.auth().currentUser;
-                      userA
-                        .updateProfile({
-                          photoURL: url
-                        })
-                        .then(() => {})
-                        .catch(error => {
-                          console.log(error);
-                        });
-                    }
-                  }
-                );
+              this.user.user.updateProfile({
+                  photoURL: url
+                })
+                .then(() => {
+                  this.$forceUpdate();
+                  
+                })
+                .catch(error => {
+                  console.log(error);
+                });
             })
             .catch(error => {
               console.log(error);
             });
+            this.upImg();
+    },
+    onFilePicked(e) {
+      const files = e.target.files;
+      if (files[0] !== undefined) {
+        this.imageName = files[0].name;
+
+        if (this.imageName.lastIndexOf(".") <= 0) {
+          return;
+        }
+        this.fr = new FileReader();
+        this.fr.readAsDataURL(files[0]);
+        this.fr.addEventListener("load", () => {
+          this.imageUrl = this.fr.result;
+          this.imageFile = files[0]; // this is an image file that can be sent to server...
+          document.getElementById("blur").blur();
         });
       } else {
         this.imageName = "";
@@ -429,21 +380,6 @@ export default {
         this.imageUrl = "";
       }
     },
-    // updateImg() {
-    //   var userA = firebase.auth().currentUser;
-
-    //   userA
-    //     .updateProfile({
-    //       profile_picture: this.imageFile
-    //     })
-    //     .then(() => {
-    //       this.editPhoto = false;
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-    // },
-
     change() {
       this.editingPass = true;
     },
@@ -471,11 +407,11 @@ export default {
             // Sign-out successful.
             this.$store.commit("setUser", null);
             this.alert = true;
+            this.editing=false;
           })
           .catch(error => {
             console.log(error);
           });
-      } else {
       }
     }
   },

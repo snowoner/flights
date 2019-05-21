@@ -26,8 +26,13 @@
                 <v-spacer></v-spacer>
                 <p class="headline text-xs-center mb-0">Flights</p>
                 <v-spacer></v-spacer>
-                <router-link to="/profile" class="none">
-                <v-icon left large >account_circle</v-icon>
+                <router-link to="/profile">
+                  <v-avatar class="mr-3" size="30px" color="grey lighten-4">
+                  <img
+                    :src="user?user.user.photoURL||require('../../public/nouser.png'):require('../../public/nouser.png')"
+                    alt="avatar"
+                  >
+                </v-avatar>
                 </router-link>
               </v-card-title>
               <!-- Inputs -->
@@ -391,6 +396,9 @@ export default {
   computed: {
     numResults() {
       return this.$store.getters.getNumResults;
+    },
+    user(){
+      return this.$store.getters.getUser;
     },
     loading() {
       return this.$store.getters.getLoading;
