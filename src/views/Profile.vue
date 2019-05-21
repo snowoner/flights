@@ -366,23 +366,26 @@ export default {
         console.log('Upload is running');
         break;
     }
-  }, function(error) {
+  }, error=> {
 
   // A full list of error codes is available at
   // https://firebase.google.com/docs/storage/web/handle-errors
   switch (error.code) {
     case 'storage/unauthorized':
       // User doesn't have permission to access the object
+        this.$store.commit("setLoading", false);
       break;
 
     case 'storage/canceled':
       // User canceled the upload
+       this.$store.commit("setLoading", false);
       break;
 
  
 
     case 'storage/unknown':
       // Unknown error occurred, inspect error.serverResponse
+       this.$store.commit("setLoading", false);
       break;
   }
 }, ()=>{
