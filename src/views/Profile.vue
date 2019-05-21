@@ -6,7 +6,7 @@
       </v-flex>
       <v-flex xs12>
         <v-layout row>
-          <v-flex xs12>
+          <v-flex xs12 v-if="!loading">
             <v-card>
               <v-card-title class="blue white--text">
                 <v-menu right height="60px">
@@ -226,6 +226,17 @@
               </v-container>
             </v-card>
           </v-flex>
+          <v-flex v-if="loading">
+            <v-progress-circular
+      :rotate="-90"
+      :size="100"
+      :width="15"
+      :value="value"
+      color="primary"
+    >
+      {{ value }}
+    </v-progress-circular>
+          </v-flex>
         </v-layout>
       </v-flex>
       <v-flex xs12 class="separated100">
@@ -270,6 +281,7 @@ export default {
       imageUrl: "",
       imageFile: "",
       fr: '',
+      value: 0
     };
   },
   methods: {
@@ -341,10 +353,11 @@ export default {
           var usageImage = storage.ref(profileImg.fullPath);
 
   uploadImage.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-  function(snapshot) {
+  snapshot=> {
+    this.$store.commit("setLoading", true);
     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    console.log('Upload is ' + progress + '% done');
+    this.value=progress;
     switch (snapshot.state) {
       case firebase.storage.TaskState.PAUSED: // or 'paused'
         console.log('Upload is paused');
@@ -375,7 +388,7 @@ export default {
 }, ()=>{
    uploadImage.snapshot.ref.getDownloadURL().then(downloadURL=> {
     console.log('File available at', downloadURL);
- 
+    this.$store.commit("setLoading", false);
           usageImage
             .getDownloadURL()
             .then(url => {
@@ -465,7 +478,10 @@ export default {
       if (this.user) {
         return this.user.user.email;
       }
-    }
+    },
+     loading() {
+      return this.$store.getters.getLoading;
+    },
   },
   created() {
     this.db = firebase.database();
