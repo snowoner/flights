@@ -4,9 +4,35 @@
       <v-flex xs12>
         <v-img class="elevation-5" width="100%" src="./logo.jpg"></v-img>
       </v-flex>
-      <v-flex class="separated"></v-flex>
       <v-flex xs12>
         <v-card class="elevation-5">
+           <v-card-title class="blue white--text">
+                <v-menu right height="60px">
+                  <template v-slot:activator="{ on }">
+                    <v-btn dark icon v-on="on">
+                      <v-icon>menu</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-tile v-for="(item, i) in menu" :key="i">
+                      <router-link :to="item.to">
+                        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                      </router-link>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+                <v-spacer></v-spacer>
+                <p class="headline text-xs-center mb-0">Login</p>
+                <v-spacer></v-spacer>
+                <router-link to="/profile">
+                  <v-avatar class="mr-3" size="30px" color="grey lighten-4">
+                  <img
+                    :src="require('../../public/nouser.png')"
+                    alt="avatar"
+                  >
+                </v-avatar>
+                </router-link>
+              </v-card-title>
           <v-card-text>
             <v-form>
               <v-text-field
@@ -87,7 +113,12 @@ export default {
         }
       },
       show2: false,
-      errores: null
+      errores: null,
+        menu: [
+        { title: "Home", to: "/home"},
+        { title: "Flights", to: "/flights/ " },
+        { title: "My Flights", to: "/myflights" }
+      ],
     };
   },
   methods: {
@@ -128,7 +159,7 @@ export default {
           this.errores = error.message;
         });
     }
-  }
+  },
 };
 </script>
 

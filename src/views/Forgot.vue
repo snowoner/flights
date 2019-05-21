@@ -6,6 +6,26 @@
       </v-flex>
       <v-flex class="separated"></v-flex>
       <v-flex xs12>
+        <v-snackbar
+                v-model="emailSend"
+                color= "success"
+                :multi-line="mode === 'multi-line'"
+                :timeout="0"
+                :vertical="mode === 'vertical'"
+              >
+                {{ text }}
+                <v-btn dark flat @click="goLogin">Go Login</v-btn>
+              </v-snackbar>
+              <v-snackbar
+                v-model="emailFail"
+                color="error"
+                :multi-line="mode === 'multi-line'"
+                :timeout="0"
+                :vertical="mode === 'vertical'"
+              >
+                {{ text2 }}
+                <v-btn dark flat @click="emailFail = false">Close</v-btn>
+              </v-snackbar>
         <v-card class="elevation-5">
           <v-card-text>
             <v-form>
@@ -59,7 +79,12 @@ export default {
           // custom attributes
         }
       },
-      errores: null
+      mode: "multi-line",
+      emailSend: false,
+      emailFail: false,
+      errores: null,
+      text:"Email Send! See your Inbox to reset password",
+      text2: "Sorry an error ocurred, try reset your password later",
     };
   },
   methods: {
@@ -74,14 +99,17 @@ export default {
           var auth = firebase.auth();
           auth
             .sendPasswordResetEmail(this.email)
-            .then(function() {
-              // Email sent.
+            .then(success=> {
+              this.emailSend = true;
             })
             .catch(error => {
               this.errores = error.message;
             });
         })
-        .catch((error) => {console.log(error)});
+        .catch((error) => {
+          this.emailFail = true;
+          console.log(error)
+          });
     },
     goLogin() {
       this.$router.push("/login"); //this will be changed

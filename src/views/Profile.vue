@@ -58,7 +58,7 @@
                   <v-flex xs12>
                     <v-card flat>
                       <v-card-title primary-title>
-                        <div>      
+                        <div>
                           <v-btn v-if="editing" @click="editName=!editName" small>
                             Change
                             <v-icon small right>create</v-icon>
@@ -144,7 +144,7 @@
                     >
                   </v-flex>
                   <v-flex xs6>
-                    <v-btn  small @click="upImg">Cancel</v-btn>
+                    <v-btn small @click="upImg">Cancel</v-btn>
                     <v-btn small @click="updateI">Confirm</v-btn>
                   </v-flex>
                 </v-layout>
@@ -223,19 +223,51 @@
                     </v-card>
                   </v-dialog>
                 </v-layout>
+                <v-layout
+                  v-if="editing"
+                  row
+                  class="text-center big"
+                  align-items-center
+                  justify-content-center
+                >
+                  <v-flex xs12 class="center" @click="editDelete=!editDelete">
+                    <v-spacer></v-spacer>
+                    <strong>
+                      Delete Acount
+                      <v-icon color="red">delete</v-icon>
+                    </strong>
+                  </v-flex>
+
+                  <v-dialog v-model="editDelete" persistent max-width="290">
+                    <v-card>
+                      <v-card-title class="headline">Are you sure to delete your account?</v-card-title>
+                      <v-card-text>This action will delete all your information and flights.</v-card-text>
+
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="green darken-1"
+                          flat
+                          @click="dissmissDelete"
+                        >I will do it later</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red darken-1" flat @click="deleteUser">Proceed to delete</v-btn>
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-layout>
               </v-container>
             </v-card>
           </v-flex>
           <v-flex v-if="loading">
             <v-progress-circular
-      :rotate="-90"
-      :size="100"
-      :width="15"
-      :value="value"
-      color="primary"
-    >
-      {{ value }}
-    </v-progress-circular>
+              :rotate="-90"
+              :size="100"
+              :width="15"
+              :value="value"
+              color="primary"
+            >{{ value }}</v-progress-circular>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -280,11 +312,46 @@ export default {
       imageName: "",
       imageUrl: "",
       imageFile: "",
-      fr: '',
-      value: 0
+      fr: "",
+      value: 0,
+      editDelete: false
     };
   },
   methods: {
+    deleteUser() {
+     
+
+      //step1 delete store
+      var storage = firebase.storage();
+      var storageRef = storage.ref();
+      var imagesRef = storageRef.child("images");
+      var userCarpet = imagesRef.child(this.user.user.uid);
+      var desertRef = userCarpet.child("profileImg");
+      desertRef
+        .delete()
+        .then(succes => {
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+      // step2 delete database
+
+      // TODO
+
+      //step3 delete auth
+
+
+    this.user.user.delete()
+        .then(succes => {
+        })
+        .catch(error=> {
+          console.log(error);
+        });
+      this.editing=false;
+      this.$store.commit("setUser", null);
+      this.editDelete = false;
+    },
     upImg() {
       this.editPhoto = false;
     },
@@ -317,6 +384,9 @@ export default {
     dissmiss() {
       this.editingPass = false;
     },
+    dissmissDelete() {
+      this.editDelete = false;
+    },
     validate() {
       this.errores = null;
       this.$validator
@@ -325,7 +395,8 @@ export default {
           if (!result) {
             return;
           }
-         this.user.user.updatePassword(this.password2)
+          this.user.user
+            .updatePassword(this.password2)
             .then(res => {
               this.editingPass = false;
               this.changePassOK = true;
@@ -343,79 +414,74 @@ export default {
     pickFile() {
       this.$refs.image.click();
     },
-    updateI(){
-          var storage = firebase.storage();
-          var storageRef = storage.ref();
-          var imagesRef = storageRef.child("images");
-          var userImg = imagesRef.child(this.user.user.uid);
-          var profileImg = userImg.child("profileImg");
-          var uploadImage = profileImg.put(this.imageFile);
-          var usageImage = storage.ref(profileImg.fullPath);
+    updateI() {
+      var storage = firebase.storage();
+      var storageRef = storage.ref();
+      var imagesRef = storageRef.child("images");
+      var userImg = imagesRef.child(this.user.user.uid);
+      var profileImg = userImg.child("profileImg");
+      var uploadImage = profileImg.put(this.imageFile);
+      var usageImage = storage.ref(profileImg.fullPath);
 
-  uploadImage.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-  snapshot=> {
-    this.$store.commit("setLoading", true);
-    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    this.value=progress;
-    switch (snapshot.state) {
-      case firebase.storage.TaskState.PAUSED: // or 'paused'
-        console.log('Upload is paused');
-        break;
-      case firebase.storage.TaskState.RUNNING: // or 'running'
-        console.log('Upload is running');
-        break;
-    }
-  }, error=> {
+      uploadImage.on(
+        firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        snapshot => {
+          this.$store.commit("setLoading", true);
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.value = Math.round(progress * 100) / 100;
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+              break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+              break;
+          }
+        },
+        error => {
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case "storage/unauthorized":
+              // User doesn't have permission to access the object
+              this.$store.commit("setLoading", false);
+              break;
 
-  // A full list of error codes is available at
-  // https://firebase.google.com/docs/storage/web/handle-errors
-  switch (error.code) {
-    case 'storage/unauthorized':
-      // User doesn't have permission to access the object
-        this.$store.commit("setLoading", false);
-      break;
+            case "storage/canceled":
+              // User canceled the upload
+              this.$store.commit("setLoading", false);
+              break;
 
-    case 'storage/canceled':
-      // User canceled the upload
-       this.$store.commit("setLoading", false);
-      break;
-
- 
-
-    case 'storage/unknown':
-      // Unknown error occurred, inspect error.serverResponse
-       this.$store.commit("setLoading", false);
-      break;
-  }
-}, ()=>{
-   uploadImage.snapshot.ref.getDownloadURL().then(downloadURL=> {
-    console.log('File available at', downloadURL);
-    this.$store.commit("setLoading", false);
-          usageImage
-            .getDownloadURL()
-            .then(url => {
-              this.user.user.updateProfile({
-                  photoURL: downloadURL
-                })
-                .then(() => {
-                  this.upImg();
-                  this.$forceUpdate();
-                  
-                })
-                .catch(error => {
-                  console.log(error);
-                });
-            })
-            .catch(error => {
-              console.log(error);
-            });
-            
-       });
-}
-);
-
-
+            case "storage/unknown":
+              // Unknown error occurred, inspect error.serverResponse
+              this.$store.commit("setLoading", false);
+              break;
+          }
+        },
+        () => {
+          uploadImage.snapshot.ref.getDownloadURL().then(downloadURL => {
+            this.$store.commit("setLoading", false);
+            usageImage
+              .getDownloadURL()
+              .then(url => {
+                this.user.user
+                  .updateProfile({
+                    photoURL: downloadURL
+                  })
+                  .then(() => {
+                    this.upImg();
+                    this.$forceUpdate();
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          });
+        }
+      );
     },
     onFilePicked(e) {
       const files = e.target.files;
@@ -465,7 +531,7 @@ export default {
             // Sign-out successful.
             this.$store.commit("setUser", null);
             this.alert = true;
-            this.editing=false;
+            this.editing = false;
           })
           .catch(error => {
             console.log(error);
@@ -482,12 +548,12 @@ export default {
         return this.user.user.email;
       }
     },
-     loading() {
+    loading() {
       return this.$store.getters.getLoading;
-    },
+    }
   },
   created() {
-    this.db = firebase.database();
+    
   }
 };
 </script>

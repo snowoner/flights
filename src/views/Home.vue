@@ -54,6 +54,7 @@
                 </v-layout>
               </v-flex>
               <v-flex xs12 class="text-justify mr-2 ml-2">
+                <p><span v-if="user!=null">Hi  </span> <strong v-if="user!=null" >{{user.user.displayName}}.</strong><p>
                 <p>
                   In
                   <strong>LandAway</strong>

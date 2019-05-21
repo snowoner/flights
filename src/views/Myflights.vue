@@ -38,7 +38,7 @@
               <v-container fluid v-if="user!=null && selectFlight">
                 <v-layout v-if="selectFlight.length>0" row wrap>
                   <v-flex xs12>
-                    <v-btn>click me!</v-btn>
+                    <v-btn @click="contador++">click me!</v-btn><span>{{this.contador}}</span>
                   </v-flex>
                   <v-flex xs12>
                     <Flight
@@ -52,7 +52,8 @@
                 <v-flex v-else>
                   <v-card>
                     <v-card-text>
-                      You do not have any flights yet!
+                    
+                     {{user.user.displayName+" you "||" You "}} don't have any flights yet!
                       <v-card-actions>
                         <v-spacer></v-spacer>
 
@@ -97,7 +98,8 @@ export default {
       menu: [
         { title: "Home", to: "/home" },
         { title: "Flights", to: "/flights/ " }
-      ]
+      ],
+      contador:0
     };
   },
   methods: {},

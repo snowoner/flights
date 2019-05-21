@@ -76,7 +76,6 @@ export default {
   },
   methods: {
     del(){
-      console.log("del");
       this.$store.commit("delSelectFlight", this.flight);
       this.$router.push("/myflights");
       
@@ -86,6 +85,7 @@ export default {
         window.open(this.flight.deep_link);
       }
       else {
+        
         this.$store.commit("setSelectFlight", this.flight);
        this.$router.replace("/myflights");
       }
@@ -111,14 +111,14 @@ export default {
    
     proceed(){
       this.dialog = false;
-      console.log("proceed");
+   
       this.$store.commit("setSelectFlight", this.flight);
       this.$router.replace("/login");
     },
     dissmiss(){
       this.dialog = false;
       this.$store.commit("setSelectFlight", null);
-     console.log("dissmiss");
+  
     },
     convertDay(val) {
       // Convert timestamp to milliseconds
