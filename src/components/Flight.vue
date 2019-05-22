@@ -81,12 +81,14 @@ export default {
         window.open(this.flight.deep_link);
       } else {
         this.setDbFlight();
-        //maybe messaje flight added?
       }
-
       // window.open(deep_link);
     },
     setDbFlight() {
+      
+      
+
+
       var pushRef = firebase
         .database()
         .ref("users/" + this.user.user.uid + "/flights")
@@ -98,6 +100,7 @@ export default {
         .catch(error => {
           console.log(error);
         });
+      // }
        
     },
 

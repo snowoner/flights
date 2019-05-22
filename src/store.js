@@ -60,6 +60,10 @@ export default new Vuex.Store({
       state.flights = data;
     },
 
+    setFlightsNull(state) {
+      state.flights = []
+    },
+
     setLoading(state, data) {
       state.loading = data;
     },
@@ -122,20 +126,35 @@ export default new Vuex.Store({
       var userId = firebase.auth().currentUser.uid;
 
       var ref = firebase.database().ref("users/" + userId + "/flights");
-      
-      ref.child(flightID).remove().then(()=>{
-        console.log("succes");
-        this.dispatch("getDbFlights");
-      }).catch(error =>{
-        console.log(error);
-      })
-          
-          // console.log (flightID);
-          // console.log(element);
-          // console.log (` key ${key} data: ${data}`);
-          // console.log (`flightId ${flightID == element}`);
-    
+
+      ref
+        .child(flightID)
+        .remove()
+        .then(() => {
+          this.dispatch("getDbFlights");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
+
+  //  repitedId({ commit, state }, id) {
+  //     var sameId = false;
+  //     var userId = firebase.auth().currentUser.uid;
+  //     var flightRef = firebase.database().ref("users/" + userId + "/flights");
+  //     flightRef
+  //       .once("value", function(snapshot) {
+  //         snapshot.forEach(function(childSnapshot) {
+  //           var childData = childSnapshot.val().flight;
+  //           if (childData.id == id) {
+  //             sameId = true;
+  //           }
+  //         });
+  //       })
+  //       .then(() => {
+  //         return sameId;
+  //       });
+  //   },
     // },
     getDbFlights({commit, state}) {
       // var userId = firebase.auth().currentUser.uid;
@@ -143,9 +162,9 @@ export default new Vuex.Store({
       // flightRef.on("value", datos => {
       //   context.commit("setDbFlights", datos.val());
       // });
+ 
       var userId = firebase.auth().currentUser.uid;
       if (state.selectFlight) {
-          console.log("funciona");
         firebase
           .database()
           .ref("users/" + userId + "/flights")
@@ -161,7 +180,6 @@ export default new Vuex.Store({
       }
 
       var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`
-      console.log(url);
       fetch(url)
         .then(json => json.json())
         .then(data => {

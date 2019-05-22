@@ -536,6 +536,7 @@ export default {
             
             this.$store.commit("setUser", null);
             this.$store.commit("setDbFlightsNull");
+            this.$store.commit("setFlightsNull");
             this.alert = true;
             this.editing = false;
           })
