@@ -120,6 +120,7 @@ export default new Vuex.Store({
       
       ref.child(flightID).remove().then(()=>{
         console.log("succes");
+        this.dispatch("getDbFlights");
       }).catch(error =>{
         console.log(error);
       })

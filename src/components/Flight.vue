@@ -75,7 +75,6 @@ export default {
   methods: {
     del() {
       this.$store.dispatch("deldbFlight", this.id);
-      this.$router.replace("/profile");
     },
     book() {
       if (this.$router.history.current.name == "myflights") {
