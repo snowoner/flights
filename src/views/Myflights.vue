@@ -35,25 +35,26 @@
                 </v-avatar>
                 </router-link>
               </v-card-title>
-              <v-container fluid v-if="user!=null && selectFlight">
-                <v-layout v-if="selectFlight.length>0" row wrap>
+              <v-container fluid v-if="user!=null">
+                <v-layout row wrap>
                   <v-flex xs12>
                     <v-btn @click="contador++">click me!</v-btn><span>{{this.contador}}</span>
                   </v-flex>
-                  <v-flex xs12>
+                  <v-flex xs12 v-if="dbFlights">
                     <Flight
-                      v-for="(flight, index) in selectFlight"
+                      v-for="(flight, index) in dbFlights"
                       :key="index"
-                      :flight="flight"
-                      :oneWay="flight.hasOwnProperty('return_duration')?false:true"
+                      :flight="flight.flight.flight"
+                      :oneWay="flight.flight.flight.hasOwnProperty('return_duration')?false:true"
+                      :id="flight.id"
                     ></Flight>
                   </v-flex>
                 </v-layout>
-                <v-flex v-else>
+                <v-flex v-if="!dbFlights||dbFlights.length==0">
                   <v-card>
                     <v-card-text>
                     
-                     {{user.user.displayName+" you "||" You "}} don't have any flights yet!
+                     {{user.user.displayName?user.user.displayName+" you":""||" You "}} don't have any flights yet!
                       <v-card-actions>
                         <v-spacer></v-spacer>
 
@@ -82,8 +83,7 @@
         </v-layout>
       </v-flex>
        <v-flex xs12 class="separated100">
-        <!-- <v-btn @click="logout">Logout</v-btn> -->
-        <strong>LandAway made with Love &lt;3 </strong>
+        <strong>LandAway made with Love &#128147;</strong>
       </v-flex>
     </v-layout>
   </v-container>
@@ -107,9 +107,15 @@ export default {
     user() {
       return this.$store.getters.getUser;
     },
-    selectFlight() {
+    selectFlight() {  //esto se va a la puta
       return this.$store.getters.getSelectFlight;
+    },
+    dbFlights(){
+      return this.$store.getters.getDbFlights;
     }
+  },
+  created() {
+    this.$store.dispatch("getDbFlights");
   },
   components: {
     Flight

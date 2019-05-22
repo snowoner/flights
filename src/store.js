@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import firebase from "firebase";
 
 Vue.use(Vuex);
 
@@ -16,7 +17,8 @@ export default new Vuex.Store({
     numResults: null,
     selectFlight: [],
     user: null,
-    db:'',
+    db: "",
+    dbFlights: []
 
     // offer: [],
     // offers: [],
@@ -41,28 +43,50 @@ export default new Vuex.Store({
     setUser(state, data) {
       state.user = data;
     },
+
     setLocations(state, data) {
       state.locations = data;
     },
+
+    setDbFlights(state, data) {
+      state.dbFlights = data;
+    },
+
+    setDbFlightsNull(state) {
+      state.dbFlights = [];
+    },
+
     setFlights(state, data) {
       state.flights = data;
     },
+
     setLoading(state, data) {
       state.loading = data;
     },
+
     setNumResults(state, data) {
       state.numResults = data;
     },
+
     setSelectFlight(state, data) {
       state.selectFlight.push(data);
     },
-    delSelectFlight(state, data) {
-      for (var i = state.selectFlight.length - 1; i >= 0; i--) {
-        if (state.selectFlight[i] == data) {
-          state.selectFlight.splice(i, 1);
-        }
-      }
-    }
+
+    // deldbFlight(state, data) {
+    //   for (var i = state.dbFlights.length - 1; i >= 0; i--) {
+    //     if (state.dbFlights[i] == data) {
+    //       state.dbFlights.splice(i, 1);
+    //     }
+    //   }
+    // },
+
+    // delSelectFlight(state, data) {
+    //   for (var i = state.selectFlight.length - 1; i >= 0; i--) {
+    //     if (state.selectFlight[i] == data) {
+    //       state.selectFlight.splice(i, 1);
+    //     }
+    //   }
+    // }
     // setAirports(state, data) {
     //   state.airports = data;
     // }
@@ -90,6 +114,48 @@ export default new Vuex.Store({
     //       });
     //   });
     // },
+    deldbFlight(context, flightID) {
+      var userId = firebase.auth().currentUser.uid;
+      var ref = firebase.database().ref("users/" + userId + "/flights");
+      
+      ref.child(flightID).remove().then(()=>{
+        console.log("succes");
+      }).catch(error =>{
+        console.log(error);
+      })
+          
+          // console.log (flightID);
+          // console.log(element);
+          // console.log (` key ${key} data: ${data}`);
+          // console.log (`flightId ${flightID == element}`);
+    
+    },
+    // },
+    getDbFlights(context) {
+      // var userId = firebase.auth().currentUser.uid;
+      // var flightRef = firebase.database().ref("users/" + userId);
+      // flightRef.on("value", datos => {
+      //   context.commit("setDbFlights", datos.val());
+      // });
+      var userId = firebase.auth().currentUser.uid;
+      var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`
+      console.log(url);
+      fetch(url)
+        .then(json => json.json())
+        .then(data => {
+          var arrayFlights = [];
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              const element = data[key];
+              arrayFlights.push({ id: key, flight: element });
+            }
+          }
+          context.commit("setDbFlights", arrayFlights);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     getLocations(context) {
       fetch(context.state.urlLocation)
         .then(data => data.json())
@@ -155,6 +221,9 @@ export default new Vuex.Store({
     },
     getSelectFlight(state) {
       return state.selectFlight;
+    },
+    getDbFlights(state) {
+      return state.dbFlights;
     }
     // getOffers(state) {
     //   return state.offers;

@@ -524,16 +524,23 @@ export default {
     logout() {
       this.snackbar = true;
       if (this.user) {
+        var userId = this.user.user.uid;
+        
+            var ref = firebase.database().ref("users/" + userId);
+            ref.off();
         firebase
           .auth()
           .signOut()
           .then(res => {
             // Sign-out successful.
+            
             this.$store.commit("setUser", null);
+            this.$store.commit("setDbFlightsNull");
             this.alert = true;
             this.editing = false;
           })
           .catch(error => {
+            console.log("logoutfail")
             console.log(error);
           });
       }
