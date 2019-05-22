@@ -137,7 +137,7 @@ export default {
         .then(user => {
           this.$store.commit("setUser", user);
           this.$router.replace("myflights");  //this will be changed
-          this.$store.dispatch("getDbFlights");
+          
         })
         .catch(error => {
           this.errores=error.message;
@@ -155,7 +155,7 @@ export default {
         .then(user => {
           this.$store.commit("setUser", user); 
           this.$router.replace("myflights");  //this will be changed
-          this.$store.dispatch("getDbFlights");  //seguramente lo llama login....
+         
         })
         .catch(error => {
           this.errores = error.message;

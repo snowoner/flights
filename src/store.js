@@ -69,8 +69,12 @@ export default new Vuex.Store({
     },
 
     setSelectFlight(state, data) {
-      state.selectFlight.push(data);
+      state.selectFlight = data;
     },
+    delSelectFlight(state) {
+      state.selectFlight = [];
+    }
+    
 
     // deldbFlight(state, data) {
     //   for (var i = state.dbFlights.length - 1; i >= 0; i--) {
@@ -116,6 +120,7 @@ export default new Vuex.Store({
     // },
     deldbFlight(context, flightID) {
       var userId = firebase.auth().currentUser.uid;
+
       var ref = firebase.database().ref("users/" + userId + "/flights");
       
       ref.child(flightID).remove().then(()=>{
@@ -132,13 +137,29 @@ export default new Vuex.Store({
     
     },
     // },
-    getDbFlights(context) {
+    getDbFlights({commit, state}) {
       // var userId = firebase.auth().currentUser.uid;
       // var flightRef = firebase.database().ref("users/" + userId);
       // flightRef.on("value", datos => {
       //   context.commit("setDbFlights", datos.val());
       // });
       var userId = firebase.auth().currentUser.uid;
+      if (state.selectFlight) {
+          console.log("funciona");
+        firebase
+          .database()
+          .ref("users/" + userId + "/flights")
+          .push({
+            flight: state.selectFlight
+          })
+          .then(() => {
+            commit("delSelectFlight");
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+
       var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`
       console.log(url);
       fetch(url)
@@ -151,7 +172,7 @@ export default new Vuex.Store({
               arrayFlights.push({ id: key, flight: element });
             }
           }
-          context.commit("setDbFlights", arrayFlights);
+          commit("setDbFlights", arrayFlights);
         })
         .catch(error => {
           console.log(error);
