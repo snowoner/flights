@@ -2,13 +2,14 @@
   "name": "LandAway",
   "short_name": "LandAway",
   "start_url": "index.html",
-  "display": "standalone",
   "theme_color": "#5cb4f5",
+  "display": "fullscreen",
+  "orientation": "portrait",
   "background_color": "#fff",
   "icons": [
     {
       "src": "/flights/public/logo_small.png", 
-      "sizes": "128pxx128px", 
+      "sizes": "64x64", 
       "type": "image/png" 
     }
   ]
