@@ -18,7 +18,9 @@ export default new Vuex.Store({
     selectFlight: [],
     user: null,
     db: "",
-    dbFlights: []
+    dbFlights: [],
+    chat: [],
+    // chatHmtl: ''
 
     // offer: [],
     // offers: [],
@@ -72,11 +74,19 @@ export default new Vuex.Store({
       state.numResults = data;
     },
 
+    // setChatHtml(state, data) {
+    //   state.chatHmtl = data;
+    // },
+
     setSelectFlight(state, data) {
       state.selectFlight = data;
     },
     delSelectFlight(state) {
       state.selectFlight = [];
+    },
+    
+    setChat(state, data){
+      state.chat = data;
     }
     
 
@@ -122,6 +132,28 @@ export default new Vuex.Store({
     //       });
     //   });
     // },
+    getChat(context){
+      var userId = firebase.auth().currentUser.uid;
+      let url = `https://landaway-2a000.firebaseio.com/chats/${userId}/messages.json`;
+      fetch(url)
+        .then(json => json.json())
+        .then(data => {
+          var chats = [];
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              const element = data[key];
+              chats.push({ to: element.to, message: element.message });
+            }
+          }
+          context.commit("setChat", chats);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+
+
     deldbFlight(context, flightID) {
       var userId = firebase.auth().currentUser.uid;
 
@@ -244,6 +276,12 @@ export default new Vuex.Store({
     // getAirports(state) {
     //   return state.airports;
     // }
+    // getChatHtml(state){
+    //   return state.chatHmtl;
+    // },
+    getChat(state) {
+      return state.chat;
+    },
     getUser(state) {
       return state.user;
     },

@@ -1,0 +1,15 @@
+{
+  "name": "LandAway",
+  "short_name": "LandAway",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#5cb4f5",
+  "background_color": "#fff",
+  "icons": [
+    {
+      "src": "./public/logo_small.png", 
+      "sizes": "128x128", 
+      "type": "image/png" 
+    }
+  ]
+}
