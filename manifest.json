@@ -8,7 +8,7 @@
   "background_color": "#fff",
   "icons": [
     {
-      "src": "./logo_small.png", 
+      "src": "public/logo_small.png", 
       "sizes": "64x64", 
       "type": "image/png" 
     }
