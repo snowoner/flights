@@ -150,7 +150,6 @@ export default new Vuex.Store({
           for (const key in data) {
             if (data.hasOwnProperty(key)) {
               const element = data[key];
-              console.log(element);
               chats.push({
                 messages: element.messages,
                 id: key,
@@ -158,6 +157,7 @@ export default new Vuex.Store({
               });
             }
           }
+          console.log(chats);
           context.commit("setAllChats", chats);
         })
         .catch(error => {
