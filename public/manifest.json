@@ -5,11 +5,22 @@
   "theme_color": "#5cb4f5",
   "orientation": "portrait",
   "background_color": "#fff",
+  "display": "fullscreen",
   "icons": [
     {
-      "src": "/flights/public/favicon-32x32.png",
+      "src": "favicon-32x32.png",
       "sizes": "32x32", 
       "type": "image/png" 
+    },
+    { 
+      "src": "favicon-16x16.png",
+      "sizes": "16x16", 
+      "type": "image/png"
+    },
+    { 
+      "src": "apple-touch-icon.png",
+      "sizes": "144x144", 
+      "type": "image/png"
     }
   ]
-}
+} 
