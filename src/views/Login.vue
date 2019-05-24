@@ -136,8 +136,26 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
           this.$store.commit("setUser", user);
+          //this code is temporal
+
+        //    firebase
+        // .database()
+        // .ref("users/" + userId + "/user")
+        // .push({
+        //   to: "admin",
+        //   message: this.message
+        // })
+        // .then(() => {
+        //  this.$store.dispatch("getChat");
+        // })
+        // .catch(error => {
+        //   console.log(error);
+        // });
+
+
+
           this.$router.replace("myflights");  //this will be changed
-          
+
         })
         .catch(error => {
           this.errores=error.message;
@@ -154,6 +172,7 @@ export default {
         .signInWithPopup(provider)
         .then(user => {
           this.$store.commit("setUser", user); 
+
           this.$router.replace("myflights");  //this will be changed
          
         })

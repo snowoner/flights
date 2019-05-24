@@ -62,7 +62,22 @@
               </v-container>
               <v-container v-if="openChat">
                 <v-card>
-                  <Chat></Chat>
+                  <v-timeline align-top dense v-for="(message, i) in chat" :key="message.key">
+                    <v-timeline-item color="pink" small v-if="message.to=='user'">
+                      <v-layout pt-3>
+                        <v-flex class="mr-2 text-xs-left">
+                          <span>{{message.message}}</span>
+                        </v-flex>
+                      </v-layout>
+                    </v-timeline-item>
+                    <v-timeline-item color="teal lighten-3" small v-if="message.to=='admin'">
+                      <v-layout pt-3>
+                        <v-flex class="mr-2 text-xs-right">
+                          <span>{{message.message}}</span>
+                        </v-flex>
+                      </v-layout>
+                    </v-timeline-item>
+                  </v-timeline>
                 </v-card>
                 <v-container>
                   <v-layout row wrap>
@@ -100,7 +115,7 @@
               <v-btn v-if="user" absolute dark fab bottom right color="indigo" @click="open">
                 <v-badge left color="red">
                   <template v-slot:badge>
-                    <span v-if="chatMessages">!</span>
+                    <span v-if="chat&&chat.length>0">!</span>
                   </template>
                   <v-icon>chat</v-icon>
                 </v-badge>
@@ -118,7 +133,6 @@
 
 <script>
 import Flight from "../components/Flight.vue";
-import Chat from "../components/Chat.vue";
 import firebase from "firebase";
 
 export default {
@@ -149,7 +163,6 @@ export default {
   methods: {
     open() {
       if (this.openChat == false) {
-      
         // this.displayChat();
 
         this.openChat = true;
@@ -162,7 +175,7 @@ export default {
     //   let template = ``;
     //   this.chat.forEach(element => {
     //     if (element.to == "user") {
-     
+
     //       template += `
     //       <v-timeline-item color="blue" small>
     //         <v-layout pt-3>
@@ -197,7 +210,11 @@ export default {
           message: this.message
         })
         .then(() => {
-          console.log("sent");
+          firebase.database().ref("chats/" + this.user.user.uid + "/user")
+          .set({userName:this.user.user.displayName||this.user.user.email})
+          .then(()=>{})
+          .catch(error=>{console.log(error)});
+         this.$store.dispatch("getChat");
         })
         .catch(error => {
           console.log(error);
@@ -228,13 +245,13 @@ export default {
     dbFlights() {
       return this.$store.getters.getDbFlights;
     },
-    chatMessages() {
-      return this.$store.getters.getChat;
-    },
+    // chatMessages() {
+    //   return this.$store.getters.getChat;
+    // },
     icon() {
       return this.icons[this.iconIndex];
     },
-    chat(){
+    chat() {
       return this.$store.getters.getChat;
     }
   },
@@ -244,7 +261,6 @@ export default {
   },
   components: {
     Flight,
-    Chat
   }
 };
 </script>
@@ -252,5 +268,9 @@ export default {
 <style>
 .separated100 {
   margin-top: 100px;
+}
+
+.justy{
+  text-align: justify;
 }
 </style>

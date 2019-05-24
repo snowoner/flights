@@ -17,9 +17,9 @@ export default new Vuex.Store({
     numResults: null,
     selectFlight: [],
     user: null,
-    db: "",
     dbFlights: [],
     chat: [],
+    allChats: []
     // chatHmtl: ''
 
     // offer: [],
@@ -81,14 +81,22 @@ export default new Vuex.Store({
     setSelectFlight(state, data) {
       state.selectFlight = data;
     },
+
     delSelectFlight(state) {
       state.selectFlight = [];
     },
-    
+
     setChat(state, data){
       state.chat = data;
+    },
+
+    setChatNull(state) {
+      state.chat = null;
+    },
+
+    setAllChats(state, data) {
+      state.allChats = data;
     }
-    
 
     // deldbFlight(state, data) {
     //   for (var i = state.dbFlights.length - 1; i >= 0; i--) {
@@ -132,6 +140,31 @@ export default new Vuex.Store({
     //       });
     //   });
     // },
+
+    getAllChats(context) {
+      let url = `https://landaway-2a000.firebaseio.com/chats.json`;
+      fetch(url)
+        .then(json => json.json())
+        .then(data => {
+          var chats = [];
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              const element = data[key];
+              console.log(element);
+              chats.push({
+                messages: element.messages,
+                id: key,
+                user: element.user.userName
+              });
+            }
+          }
+          context.commit("setAllChats", chats);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
     getChat(context){
       var userId = firebase.auth().currentUser.uid;
       let url = `https://landaway-2a000.firebaseio.com/chats/${userId}/messages.json`;
@@ -142,7 +175,7 @@ export default new Vuex.Store({
           for (const key in data) {
             if (data.hasOwnProperty(key)) {
               const element = data[key];
-              chats.push({ to: element.to, message: element.message });
+              chats.push({ to: element.to, message: element.message, id: key});
             }
           }
           context.commit("setChat", chats);
@@ -151,8 +184,6 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
-
-
 
     deldbFlight(context, flightID) {
       var userId = firebase.auth().currentUser.uid;
@@ -302,7 +333,11 @@ export default new Vuex.Store({
     },
     getDbFlights(state) {
       return state.dbFlights;
+    },
+    getAllChats(state) {
+      return state.allChats;
     }
+
     // getOffers(state) {
     //   return state.offers;
     // },

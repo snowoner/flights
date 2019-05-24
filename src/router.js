@@ -7,6 +7,7 @@ import Myflights from "./views/Myflights.vue";
 import Forgot from "./views/Forgot.vue";
 import Register from "./views/Register.vue";
 import Profile from "./views/Profile.vue";
+import AdminChat from "./views/AdminChat.vue";
 import firebase from "firebase";
 import VeeValidate from "vee-validate";
 
@@ -60,6 +61,14 @@ const router = new Router({
       path: "/profile",
       name: "profile",
       component: Profile
+    },
+    {
+      path: "/chat",
+      name: "chat",
+      component: AdminChat,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 });
@@ -69,8 +78,10 @@ router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   if (requiresAuth && !currentUser) next("login");
-  // else if (requiresAuth && currentUser) next("home");
-  else next();
+  if (requiresAuth && currentUser) {
+    if (currentUser.email == "oscar.urgelles@gmail.com") next();
+    else next("home");
+  } else next();
 });
 
 export default router;

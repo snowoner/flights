@@ -257,6 +257,9 @@
                     </v-card>
                   </v-dialog>
                 </v-layout>
+                <v-layout v-if="user">
+                  <v-btn v-if="user.user.email=='oscar.urgelles@gmail.com'" @click="goChat">Go chats</v-btn>
+                </v-layout>
               </v-container>
             </v-card>
           </v-flex>
@@ -318,6 +321,9 @@ export default {
     };
   },
   methods: {
+    goChat(){
+      this.$router.push("chat");
+    },
     deleteUser() {
      
 
@@ -537,6 +543,7 @@ export default {
             this.$store.commit("setUser", null);
             this.$store.commit("setDbFlightsNull");
             this.$store.commit("setFlightsNull");
+            this.$store.commit("setChatNull");
             this.alert = true;
             this.editing = false;
           })
