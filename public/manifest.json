@@ -8,7 +8,7 @@
   "background_color": "#fff",
   "icons": [
     {
-      "src": "/flights/public/logo_small.png", 
+      "src": "./logo_small.png", 
       "sizes": "64x64", 
       "type": "image/png" 
     }
