@@ -134,7 +134,6 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("getAllChats");
   }
 };
 </script>

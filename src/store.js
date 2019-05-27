@@ -63,7 +63,7 @@ export default new Vuex.Store({
     },
 
     setFlightsNull(state) {
-      state.flights = []
+      state.flights = [];
     },
 
     setLoading(state, data) {
@@ -86,7 +86,7 @@ export default new Vuex.Store({
       state.selectFlight = [];
     },
 
-    setChat(state, data){
+    setChat(state, data) {
       state.chat = data;
     },
 
@@ -141,6 +141,12 @@ export default new Vuex.Store({
     //   });
     // },
 
+    getMessages({ dispatch }) {
+      var ref = firebase.database().ref("chats/");
+      ref.on("value", data => {
+        dispatch("getAllChats");
+      });
+    },
     getAllChats(context) {
       let url = `https://landaway-2a000.firebaseio.com/chats.json`;
       fetch(url)
@@ -164,8 +170,15 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
+    getMessage({ dispatch }) {
+      var userId = firebase.auth().currentUser.uid;
+      var ref = firebase.database().ref("chats/" + userId);
+      ref.on("value", data => {
+        dispatch("getChat");
+      });
+    },
 
-    getChat(context){
+    getChat(context) {
       var userId = firebase.auth().currentUser.uid;
       let url = `https://landaway-2a000.firebaseio.com/chats/${userId}/messages.json`;
       fetch(url)
@@ -175,7 +188,7 @@ export default new Vuex.Store({
           for (const key in data) {
             if (data.hasOwnProperty(key)) {
               const element = data[key];
-              chats.push({ to: element.to, message: element.message, id: key});
+              chats.push({ to: element.to, message: element.message, id: key });
             }
           }
           context.commit("setChat", chats);
@@ -201,31 +214,32 @@ export default new Vuex.Store({
         });
     },
 
-  //  repitedId({ commit, state }, id) {
-  //     var sameId = false;
-  //     var userId = firebase.auth().currentUser.uid;
-  //     var flightRef = firebase.database().ref("users/" + userId + "/flights");
-  //     flightRef
-  //       .once("value", function(snapshot) {
-  //         snapshot.forEach(function(childSnapshot) {
-  //           var childData = childSnapshot.val().flight;
-  //           if (childData.id == id) {
-  //             sameId = true;
-  //           }
-  //         });
-  //       })
-  //       .then(() => {
-  //         return sameId;
-  //       });
-  //   },
+    //  repitedId({ commit, state }, id) {
+    //     var sameId = false;
+    //     var userId = firebase.auth().currentUser.uid;
+    //     var flightRef = firebase.database().ref("users/" + userId + "/flights");
+    //     flightRef
+    //       .once("value", function(snapshot) {
+    //         snapshot.forEach(function(childSnapshot) {
+    //           var childData = childSnapshot.val().flight;
+    //           if (childData.id == id) {
+    //             sameId = true;
+    //           }
+    //         });
+    //       })
+    //       .then(() => {
+    //         return sameId;
+    //       });
+    //   },
     // },
-    getDbFlights({commit, state}) {
+
+    getDbFlights({ commit, state }) {
       // var userId = firebase.auth().currentUser.uid;
       // var flightRef = firebase.database().ref("users/" + userId);
       // flightRef.on("value", datos => {
       //   context.commit("setDbFlights", datos.val());
       // });
- 
+
       var userId = firebase.auth().currentUser.uid;
       if (state.selectFlight) {
         firebase
@@ -242,7 +256,7 @@ export default new Vuex.Store({
           });
       }
 
-      var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`
+      var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`;
       fetch(url)
         .then(json => json.json())
         .then(data => {

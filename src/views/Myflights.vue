@@ -214,7 +214,6 @@ export default {
           .set({userName:this.user.user.displayName||this.user.user.email})
           .then(()=>{})
           .catch(error=>{console.log(error)});
-         this.$store.dispatch("getChat");
         })
         .catch(error => {
           console.log(error);
@@ -257,7 +256,6 @@ export default {
   },
   created() {
     this.$store.dispatch("getDbFlights");
-    this.$store.dispatch("getChat");
   },
   components: {
     Flight,
