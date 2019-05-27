@@ -70,7 +70,7 @@ export default {
         "mdi-emoticon-sad",
         "mdi-emoticon-tongue"
       ],
-      id: ''
+      id: "4F4UE0ej4HeUkyx2scjGnihHCWT2"
     };
   },
   methods: {
@@ -140,4 +140,7 @@ export default {
 </script>
 
 <style>
+.white{
+  background-color: white;
+}
 </style>

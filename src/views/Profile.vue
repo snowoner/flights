@@ -1,8 +1,8 @@
 <template>
   <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
-      <v-flex xs12>
-        <v-img class="elevation-5" width="100%" src="./logo.jpg"></v-img>
+    <v-flex xs12 class="white">
+        <v-img class="elevation-5 "  max-height="80px" contain :src="require('../../public/logo_landaway_rectangular.jpg')"></v-img>
       </v-flex>
       <v-flex xs12>
         <v-layout row>
@@ -28,6 +28,7 @@
                 <v-spacer></v-spacer>
                 <v-avatar class="mr-3" size="30px" color="grey lighten-4">
                   <img
+                    max-height="98px" max-width="97px"
                     :src="user!=null?user.user.photoURL||require('../../public/nouser.png'):require('../../public/nouser.png')"
                     alt="avatar"
                   >
@@ -587,6 +588,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.white{
+  background-color: white;
 }
 .layout.text-center.big.row.align-items-center.justify-content-center {
   height: 60px;

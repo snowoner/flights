@@ -1,8 +1,8 @@
 <template>
   <v-container grid-list-md text-xs-center>
     <v-layout row wrap>
-      <v-flex xs12>
-        <v-img class="elevation-5" width="100%" src="../logo.jpg"></v-img>
+      <v-flex xs12 class="white">
+        <v-img class="elevation-5 "  max-height="80px" contain :src="require('../../public/logo_landaway_rectangular.jpg')"></v-img>
       </v-flex>
       <v-flex xs12>
         <v-layout row>
@@ -269,7 +269,9 @@ export default {
 .separated100 {
   margin-top: 100px;
 }
-
+.white{
+  background-color: white;
+}
 .justy{
   text-align: justify;
 }
