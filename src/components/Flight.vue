@@ -121,7 +121,6 @@ export default {
               .toString()
               .substr(-2)
       }`;
-      console.log(date.getMinutes().toString().substr(-2));
       return convdataTime;
     },
 
