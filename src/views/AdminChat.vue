@@ -87,7 +87,7 @@ export default {
       this.marker = !this.marker;
     },
     sendMessage() {
-      var pushRef = firebase
+      firebase
         .database()
         .ref("chats/" + this.id + "/messages")
         .push({
