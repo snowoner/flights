@@ -15,7 +15,7 @@
                   </template>
                   <v-list>
                     <v-list-tile v-for="(item, i) in menu" :key="i">
-                      <router-link :to="item.to">
+                      <router-link class="myMenu" :to="item.to">
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       </router-link>
                     </v-list-tile>

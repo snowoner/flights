@@ -143,7 +143,7 @@ export default new Vuex.Store({
 
     getMessages({ dispatch }) {
       var ref = firebase.database().ref("chats/");
-      ref.on("value", data => {
+      ref.on("value", () => {
         dispatch("getAllChats");
       });
     },
@@ -163,7 +163,6 @@ export default new Vuex.Store({
               });
             }
           }
-          console.log(chats);
           context.commit("setAllChats", chats);
         })
         .catch(error => {
@@ -173,7 +172,7 @@ export default new Vuex.Store({
     getMessage({ dispatch }) {
       var userId = firebase.auth().currentUser.uid;
       var ref = firebase.database().ref("chats/" + userId);
-      ref.on("value", data => {
+      ref.on("value", () => {
         dispatch("getChat");
       });
     },
@@ -188,7 +187,12 @@ export default new Vuex.Store({
           for (const key in data) {
             if (data.hasOwnProperty(key)) {
               const element = data[key];
-              chats.push({ to: element.to, message: element.message, id: key });
+              chats.push({
+                to: element.to,
+                time: element.time,
+                message: element.message,
+                id: key
+              });
             }
           }
           context.commit("setChat", chats);
@@ -214,32 +218,7 @@ export default new Vuex.Store({
         });
     },
 
-    //  repitedId({ commit, state }, id) {
-    //     var sameId = false;
-    //     var userId = firebase.auth().currentUser.uid;
-    //     var flightRef = firebase.database().ref("users/" + userId + "/flights");
-    //     flightRef
-    //       .once("value", function(snapshot) {
-    //         snapshot.forEach(function(childSnapshot) {
-    //           var childData = childSnapshot.val().flight;
-    //           if (childData.id == id) {
-    //             sameId = true;
-    //           }
-    //         });
-    //       })
-    //       .then(() => {
-    //         return sameId;
-    //       });
-    //   },
-    // },
-
     getDbFlights({ commit, state }) {
-      // var userId = firebase.auth().currentUser.uid;
-      // var flightRef = firebase.database().ref("users/" + userId);
-      // flightRef.on("value", datos => {
-      //   context.commit("setDbFlights", datos.val());
-      // });
-
       var userId = firebase.auth().currentUser.uid;
       if (state.selectFlight) {
         firebase
@@ -318,12 +297,6 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    // getAirports(state) {
-    //   return state.airports;
-    // }
-    // getChatHtml(state){
-    //   return state.chatHmtl;
-    // },
     getChat(state) {
       return state.chat;
     },
@@ -351,12 +324,5 @@ export default new Vuex.Store({
     getAllChats(state) {
       return state.allChats;
     }
-
-    // getOffers(state) {
-    //   return state.offers;
-    // },
-    // getOffer(state) {
-    //   return state.offer;
-    // }
   }
 });

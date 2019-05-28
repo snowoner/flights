@@ -16,8 +16,8 @@
                     </v-btn>
                   </template>
                   <v-list>
-                    <v-list-tile v-for="(item, i) in menu" :key="i">
-                      <router-link :to="item.to">
+                      <v-list-tile v-for="(item, i) in menu" :key="i">
+                      <router-link class="myMenu" :to="item.to">
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       </router-link>
                     </v-list-tile>
@@ -62,9 +62,12 @@
               </v-container>
               <v-container v-if="openChat">
                 <v-card>
-                  <v-timeline align-top dense v-for="(message, i) in chat" :key="message.key">
+                  <v-timeline align-top dense v-for="message in chat" :key="message.key">
                     <v-timeline-item color="pink" small v-if="message.to=='user'">
                       <v-layout pt-3>
+                        <v-flex class="text-xs-left smallDate">
+                          <strong>{{message.time||"???"}}</strong>
+                        </v-flex>
                         <v-flex class="mr-2 text-xs-left">
                           <span>{{message.message}}</span>
                         </v-flex>
@@ -72,6 +75,9 @@
                     </v-timeline-item>
                     <v-timeline-item color="teal lighten-3" small v-if="message.to=='admin'">
                       <v-layout pt-3>
+                        <v-flex class="text-xs-left smallDate">
+                          <strong >{{message.time||"???"}}</strong>
+                        </v-flex>
                         <v-flex class="mr-2 text-xs-right">
                           <span>{{message.message}}</span>
                         </v-flex>
@@ -132,6 +138,7 @@
 </template>
 
 <script>
+
 import Flight from "../components/Flight.vue";
 import firebase from "firebase";
 
@@ -170,34 +177,6 @@ export default {
         this.openChat = false;
       }
     },
-    // displayChat() {
-    //   let chatRef = document.getElementById("messages");
-    //   let template = ``;
-    //   this.chat.forEach(element => {
-    //     if (element.to == "user") {
-
-    //       template += `
-    //       <v-timeline-item color="blue" small>
-    //         <v-layout pt-3>
-    //           <v-flex>
-    //             <v-card class="caption">${element.message}</v-card>
-    //           </v-flex>
-    //         </v-layout>
-    //       </v-timeline-item>`;
-    //     } else {
-    //       template += `
-    //       <v-timeline-item color="pink" small>
-    //         <v-layout pt-3>
-    //           <v-flex>
-    //             <v-card
-    //               class="caption">${element.message}</v-card>
-    //           </v-flex>
-    //         </v-layout>
-    //       </v-timeline-item>`;
-    //     }
-    //   });
-    //   this.$store.commit("setChatHtml",template);
-    // },
     toggleMarker() {
       this.marker = !this.marker;
     },
@@ -207,6 +186,7 @@ export default {
         .ref("chats/" + this.user.user.uid + "/messages")
         .push({
           to: "admin",
+          time: new Date().getHours()+":"+(new Date().getMinutes()<10?"0"+new Date().getMinutes():new Date().getMinutes()),
           message: this.message
         })
         .then(() => {
@@ -270,7 +250,14 @@ export default {
 .white{
   background-color: white;
 }
+.smallDate{
+     display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 50px;
+}
 .justy{
   text-align: justify;
 }
 </style>
+  

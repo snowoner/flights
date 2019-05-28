@@ -17,7 +17,7 @@
                   </template>
                   <v-list>
                     <v-list-tile v-for="(item, i) in menu" :key="i">
-                      <router-link :to="item.to">
+                      <router-link class="myMenu" :to="item.to">
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       </router-link>
                     </v-list-tile>
@@ -264,8 +264,6 @@ export default {
       to: {
         iata: this.dest
       },
-
-      // to: {city:this.dest, iata:null, name:this.dest},
       menu: [
         { title: "Home", to: "/home" },
         { title: "My Flights", to: "/myflights" }
@@ -296,58 +294,6 @@ export default {
     Flight
   },
   methods: {
-    //  getUserLocation() {
-    //       if (navigator.geolocation) {
-    //         navigator.geolocation.getCurrentPosition(this.showPosition);
-    //       }
-    //     },
-    //     showPosition(position) {
-    //       this.lat=position.coords.latitude;
-    //       this.lon=position.coords.longitude;
-    //     },
-    // convert(val) {
-    //   // Convert timestamp to milliseconds
-    //   let date = new Date(val * 1000);
-    //   let convdataTime = `${date.getHours()}:${
-    //     date
-    //       .getMinutes()
-    //       .toString()
-    //       .substr(-2) == 0
-    //       ? "00"
-    //       : date
-    //           .getMinutes()
-    //           .toString()
-    //           .substr(-2)
-    //   }`;
-    //   return convdataTime;
-    // },
-    // convertDay(val) {
-    //   // Convert timestamp to milliseconds
-    //   let date = new Date(val * 1000);
-    //   var months_arr = [
-    //     "Jan",
-    //     "Feb",
-    //     "Mar",
-    //     "Apr",
-    //     "May",
-    //     "Jun",
-    //     "Jul",
-    //     "Aug",
-    //     "Sep",
-    //     "Oct",
-    //     "Nov",
-    //     "Dec"
-    //   ];
-
-    //   // Month
-    //   var month = months_arr[date.getMonth()];
-
-    //   // Day
-    //   var day = date.getDate();
-
-    //   let convdataTime = `${day}-${month}`;
-    //   return convdataTime;
-    // },
     citiAndAirport: item => item.city + "-" + item.name,
     allowedDates(val) {
       return new Date(val) >= new Date(this.date);
@@ -361,13 +307,6 @@ export default {
 
       return `${day}/${month}/${year}`;
     },
-    // checkFrom(){
-    //     if(this.to.iata) {
-    //       if(this.to.iata==this.from.iata){
-    //         this.to.iata==null;
-    //       }
-    //     }
-    // },
     parseDate(date) {
       if (!date) return null;
       const [month, day, year] = date.split("/");
@@ -436,10 +375,6 @@ export default {
     }
   },
   watch: {
-    // to: {
-    //   handler: "checkFrom",
-    //   immediate: true
-    // }
   },
   created() {
     // this.getUserLocation();
@@ -449,6 +384,7 @@ export default {
 </script>
 
 <style>
+
 .flex.xs3 {
   display: flex;
   justify-content: center;
@@ -488,6 +424,7 @@ a.v-list__tile.v-list__tile--link.theme--light {
     max-width: 300px;
     width: fit-content;
 }
+
 
 .separated100 {
   margin-top: 100px;

@@ -17,7 +17,7 @@
                   </template>
                   <v-list>
                     <v-list-tile v-for="(item, i) in menu" :key="i">
-                      <router-link :to="item.to">
+                      <router-link class="myMenu" :to="item.to">
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       </router-link>
                     </v-list-tile>
@@ -68,7 +68,7 @@
               <v-flex xs12>
                 <p >See our clients most popular choices:</p>
               </v-flex>
-              <v-flex xs12 v-for="(image,index) in offers" :key="image.to">
+              <v-flex xs12 v-for="image in offers" :key="image.to">
                 <router-link :to="`/flights/${image.iata}`">
                 <v-card>
                   <span class="my-span">{{image.to}}</span>
@@ -79,14 +79,6 @@
                 </v-card>
                 </router-link>
               </v-flex>
-              <!-- <v-flex xs12 v-if="offers2">
-                <h2>The last offers we found</h2>
-                <offers v-for="(offer, index) in offers2" :key="offer.flyTo" :offer="offer"></offers>
-              </v-flex>-->
-              <!-- <v-btn @click="getLocation">as</v-btn>
-              <v-flex v-for="location in locations" :key="location">
-                <p>{{location}}</p>
-              </v-flex> -->
             </v-card>
           </v-flex>
         </v-layout>
@@ -104,6 +96,7 @@ import firebase from 'firebase';
 export default {
   data() {
     return {
+      sheet: false,
       menu: [
         { title: "Flights", to: "/flights/ " },
         { title: "My Flights", to: "/myflights" }
@@ -188,6 +181,9 @@ export default {
 </script>
 
 <style>
+.myMenu{
+  text-decoration: none;
+}
 .v-card__title.blue.white--text {
   padding: 0;
 }

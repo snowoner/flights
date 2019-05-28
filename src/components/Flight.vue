@@ -107,17 +107,21 @@ export default {
     convert(val) {
       // Convert timestamp to milliseconds
       let date = new Date(val * 1000);
-      let convdataTime = `${date.getHours()}:${
+      let convdataTime = `${date.getHours()<10?"0"+date.getHours():date.getHours()}:${
         date
           .getMinutes()
           .toString()
-          .substr(-2) == 0
-          ? "00"
+          .substr(-2) < 10
+          ? "0"+date
+          .getMinutes()
+          .toString()
+          .substr(-2)
           : date
               .getMinutes()
               .toString()
               .substr(-2)
       }`;
+      console.log(date.getMinutes().toString().substr(-2));
       return convdataTime;
     },
 

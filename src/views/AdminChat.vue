@@ -9,9 +9,12 @@
         <v-tab-item v-for="(chat,i) in AllChats" :key="chat.user" :value="'tab-' + i">
           <v-card flat>
             <v-card>
-              <v-timeline align-top dense v-for="(message, i) in chat.messages" :key="message.key">
+              <v-timeline align-top dense v-for="message in chat.messages" :key="message.key">
                 <v-timeline-item color="pink" small v-if="message.to=='user'">
                   <v-layout pt-3>
+                       <v-flex class="text-xs-left smallDate">
+                          <strong>{{message.time||"???"}}</strong>
+                        </v-flex>
                     <v-flex class="mr-2 text-xs-right">
                       <span>{{message.message}}</span>
                     </v-flex>
@@ -19,6 +22,9 @@
                 </v-timeline-item>
                 <v-timeline-item color="teal lighten-3" small v-if="message.to=='admin'">
                   <v-layout pt-3>
+                       <v-flex class="text-xs-left smallDate mr-2">
+                          <strong>{{message.time||"???"}}</strong>
+                        </v-flex>
                     <v-flex class="mr-2 text-xs-left">
                       <span>{{message.message}}</span>
                     </v-flex>
@@ -75,7 +81,6 @@ export default {
   },
   methods: {
     setID(id){
-      console.log(id);
       this.id=id;
     },
     toggleMarker() {
@@ -87,6 +92,7 @@ export default {
         .ref("chats/" + this.id + "/messages")
         .push({
           to: "user",
+          time: new Date().getHours()+":"+(new Date().getMinutes()<10?"0"+new Date().getMinutes():new Date().getMinutes()),
           message: this.message
         }).then(()=>{this.$store.dispatch("getAllChats");}).catch(error=>{console.log(error)});
       this.resetIcon();
@@ -132,14 +138,12 @@ export default {
     AllChats() {
       return this.$store.getters.getAllChats;
     }
-  },
-  created() {
   }
 };
 </script>
 
 <style>
-.white{
+.white {
   background-color: white;
 }
 </style>
