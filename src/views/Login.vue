@@ -91,7 +91,7 @@
         </v-card>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <strong>LandAway By Oscar Urgelles Marsal v 1.5</strong>
+       <strong>LandAway made with Love &#128147; By <a href="https://www.linkedin.com/in/oscarurgelles/">Oscar Urgelles</a></strong>
       </v-flex>
     </v-layout>
   </v-container>
@@ -172,9 +172,7 @@ export default {
           this.$store.commit("setUser", user); 
           this.$store.dispatch("getMessage");
           this.$store.dispatch("getMessages");
-          this.$router.replace("myflights"); 
-        
-         
+          this.$router.replace("myflights");          
         })
         .catch(error => {
           this.errores = error.message;

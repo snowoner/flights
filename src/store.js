@@ -229,28 +229,44 @@ export default new Vuex.Store({
           })
           .then(() => {
             commit("delSelectFlight");
+            var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`;
+            fetch(url)
+              .then(json => json.json())
+              .then(data => {
+                var arrayFlights = [];
+                for (const key in data) {
+                  if (data.hasOwnProperty(key)) {
+                    const element = data[key];
+                    arrayFlights.push({ id: key, flight: element });
+                  }
+                }
+                commit("setDbFlights", arrayFlights);
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`;
+        fetch(url)
+          .then(json => json.json())
+          .then(data => {
+            var arrayFlights = [];
+            for (const key in data) {
+              if (data.hasOwnProperty(key)) {
+                const element = data[key];
+                arrayFlights.push({ id: key, flight: element });
+              }
+            }
+            commit("setDbFlights", arrayFlights);
           })
           .catch(error => {
             console.log(error);
           });
       }
-
-      var url = `https://landaway-2a000.firebaseio.com/users/${userId}/flights.json`;
-      fetch(url)
-        .then(json => json.json())
-        .then(data => {
-          var arrayFlights = [];
-          for (const key in data) {
-            if (data.hasOwnProperty(key)) {
-              const element = data[key];
-              arrayFlights.push({ id: key, flight: element });
-            }
-          }
-          commit("setDbFlights", arrayFlights);
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     getLocations(context) {
       fetch(context.state.urlLocation)

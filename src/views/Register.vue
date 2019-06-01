@@ -53,7 +53,7 @@
         </v-card>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <strong>LandAway By Oscar Urgelles Marsal</strong>
+     <strong>LandAway made with Love &#128147; By <a href="https://www.linkedin.com/in/oscarurgelles/">Oscar Urgelles</a></strong>
       </v-flex>
     </v-layout>
   </v-container>
@@ -117,5 +117,8 @@ export default {
 }
 .separated100 {
   margin-top: 100px;
+}
+a{
+  text-decoration: none;
 }
 </style>

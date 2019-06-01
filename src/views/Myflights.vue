@@ -21,7 +21,7 @@
                         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       </router-link>
                     </v-list-tile>
-                  </v-list>
+                  </v-list> 
                 </v-menu>
                 <v-spacer></v-spacer>
                 <p class="headline text-xs-center mb-0">My Flights</p>
@@ -131,7 +131,7 @@
         </v-layout>
       </v-flex>
       <v-flex xs12 class="separated100">
-        <strong>LandAway made with Love &#128147;</strong>
+        <strong>LandAway made with Love &#128147; By <a href="https://www.linkedin.com/in/oscarurgelles/">Oscar Urgelles</a></strong>
       </v-flex>
     </v-layout>
   </v-container>
